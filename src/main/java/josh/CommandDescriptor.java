@@ -1,0 +1,5 @@
+package josh;
+
+class CommandDescriptor {
+
+}
