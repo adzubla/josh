@@ -1,9 +1,6 @@
 package josh;
 
-/**
- * Created by ziba on 30/06/15.
- */
-class CommandOutcome {
+public class CommandOutcome {
     private int exitCode;
 
     public int getExitCode() {

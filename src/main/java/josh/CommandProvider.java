@@ -10,7 +10,7 @@ import java.util.List;
  * - diretório com .py
  * - diretório com .groovy
  */
-interface CommandProvider {
+public interface CommandProvider {
     List<CommandDescriptor> findCommands();
 
     HelpFormatter getHelpFormatter();

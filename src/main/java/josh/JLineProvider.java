@@ -2,12 +2,34 @@ package josh;
 
 import java.util.List;
 
-/**
- * Created by ziba on 30/06/15.
- */
 public class JLineProvider implements ConsoleProvider {
     @Override
     public void configCompletion(List<CommandDescriptor> commands) {
 
+    }
+
+    @Override
+    public void displayPrompt() {
+
+    }
+
+    @Override
+    public void displayError(String message) {
+
+    }
+
+    @Override
+    public void displayWarning(String message) {
+
+    }
+
+    @Override
+    public void displayMessage(String message) {
+
+    }
+
+    @Override
+    public String readLine() {
+        return null;
     }
 }

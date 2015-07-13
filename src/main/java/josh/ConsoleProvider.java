@@ -9,6 +9,17 @@ import java.util.List;
  * - entrada de password
  * - processa TAB
  */
-interface ConsoleProvider {
+// TextDevice
+public interface ConsoleProvider {
     void configCompletion(List<CommandDescriptor> commands);
+
+    void displayPrompt();
+
+    void displayError(String message);
+
+    void displayWarning(String message);
+
+    void displayMessage(String message);
+
+    String readLine();
 }

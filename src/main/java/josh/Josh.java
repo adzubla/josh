@@ -12,16 +12,20 @@ package josh;
  * josh
  */
 public class Josh {
-    public static void main(String args) {
-        Shell js = new Shell();
 
-        boolean interactive = true;
+    public static void main(String[] args) {
+        Shell shell = new Shell();
 
-        js.setConsoleProvider(interactive
-                ? new JLineProvider()
-                : new JavaConsoleProvider());
+        CommandProviderImpl commandProvider = new CommandProviderImpl();
+        commandProvider.setCommandParser(new CommandParserImpl());
+        shell.setCommandProvider(commandProvider);
+        shell.setCommandExecutor(commandProvider);
 
-        CommandOutcome co = js.run();
+        shell.setConsoleProvider(new JavaConsoleProvider());
+
+        CommandOutcome co = shell.run();
+        System.out.println("exit code: " + co.getExitCode());
         System.exit(co.getExitCode());
     }
+
 }

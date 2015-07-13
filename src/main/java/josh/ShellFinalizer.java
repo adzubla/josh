@@ -1,5 +1,5 @@
 package josh;
 
-interface ShellFinalizer {
+public interface ShellFinalizer {
 }
 

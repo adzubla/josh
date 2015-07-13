@@ -3,7 +3,7 @@ package josh;
 /**
  * Permite juntar comandos de várias fontes
  */
-class CompoundCommandProvider {
+public class CompoundCommandProvider {
     void CompoundCommandProvider(CommandProvider... providers) {
 
     }
