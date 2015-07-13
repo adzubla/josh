@@ -1,6 +1,7 @@
 package josh;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -17,8 +18,15 @@ public class CommandParserImplTest {
     }
 
     @Test
+    public void testParseLine0() throws Exception {
+        line = "cmd";
+        result = commandParser.parseLine(line);
+        assertEquals("cmd", result.getCommandName());
+    }
+
+    @Test
     public void testParseLine1() throws Exception {
-        line = "   my-command --opt1 arg1 123  \t   4 56789  --opt2 arg2   ";
+        line = "   my-command --opt1 arg1 123  \t   4\t56789  --opt2 arg2";
         result = commandParser.parseLine(line);
         assertEquals("my-command", result.getCommandName());
         assertEquals("--opt1", result.getArguments().get(0));
@@ -28,8 +36,10 @@ public class CommandParserImplTest {
         assertEquals("56789", result.getArguments().get(4));
         assertEquals("--opt2", result.getArguments().get(5));
         assertEquals("arg2", result.getArguments().get(6));
+        assertEquals(7, result.getArguments().size());
     }
 
+    @Ignore
     @Test
     public void testParseLine2() throws Exception {
         line = "\"my command\" --opt 'Alo \"Mundo\"!'";
@@ -39,6 +49,7 @@ public class CommandParserImplTest {
         assertEquals("Alo \"Mundo\"!", result.getArguments().get(1));
     }
 
+    @Ignore
     @Test
     public void testParseLine3() throws Exception {
         line = "'my command' --opt \"Alo 'Mundo'!\"";
