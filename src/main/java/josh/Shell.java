@@ -18,8 +18,6 @@ public class Shell {
 
     private ConsoleProvider consoleProvider;
     private CommandProvider commandProvider;
-    private CommandExecutor commandExecutor;
-    private CommandParser commandParser;
 
     public ConsoleProvider getConsoleProvider() {
         return consoleProvider;
@@ -41,9 +39,9 @@ public class Shell {
                 "  | | (_) \\__ \\ | | |\n" +
                 " _/ |\\___/|___/_| |_|\n" +
                 "|__/                 \n";
-        System.out.println(banner);
-        System.out.println("Press Ctrl-D to exit shell.");
-        System.out.println();
+        consoleProvider.displayInfo(banner);
+        consoleProvider.displayInfo("Press Ctrl-D to exit shell.");
+        consoleProvider.displayInfo("");
     }
 
     protected CommandOutcome repl() {
@@ -53,20 +51,20 @@ public class Shell {
             consoleProvider.displayPrompt();
             String line = consoleProvider.readLine();
             if (line == null) {
-                System.out.println();
+                consoleProvider.displayInfo("");
                 break;
             }
             if (!line.trim().equals("")) {
                 try {
                     outcome = execute(line);
                     if (outcome.getExitCode() != 0) {
-                        System.out.println("Error executing command.");
+                        consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
                     }
                 } catch (CommandNotFound e) {
-                    System.out.println("Command " + e.getName() + " not found.");
+                    consoleProvider.displayError("Command " + e.getName() + " not found.");
                     outcome.setExitCode(127);
                 } catch (RuntimeException e) {
-                    System.out.println("Error executing command: " + e.getMessage());
+                    consoleProvider.displayError("Error: " + e.getMessage());
                     outcome.setExitCode(126);
                 }
             }
@@ -76,7 +74,7 @@ public class Shell {
     }
 
     CommandOutcome execute(String line) throws CommandNotFound {
-        CommandOutcome outcome = commandExecutor.execute(line);
+        CommandOutcome outcome = commandProvider.execute(line);
         return outcome;
     }
 
@@ -88,19 +86,4 @@ public class Shell {
         this.commandProvider = commandProvider;
     }
 
-    public CommandExecutor getCommandExecutor() {
-        return commandExecutor;
-    }
-
-    public void setCommandExecutor(CommandExecutor commandExecutor) {
-        this.commandExecutor = commandExecutor;
-    }
-
-    public CommandParser getCommandParser() {
-        return commandParser;
-    }
-
-    public void setCommandParser(CommandParser commandParser) {
-        this.commandParser = commandParser;
-    }
 }

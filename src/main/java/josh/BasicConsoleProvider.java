@@ -2,7 +2,7 @@ package josh;
 
 import java.util.List;
 
-public class JavaConsoleProvider implements ConsoleProvider {
+public class BasicConsoleProvider implements ConsoleProvider {
 
     @Override
     public void configCompletion(List<CommandDescriptor> commands) {
@@ -25,13 +25,12 @@ public class JavaConsoleProvider implements ConsoleProvider {
     }
 
     @Override
-    public void displayMessage(String message) {
+    public void displayInfo(String message) {
         System.out.println(message);
     }
 
     @Override
     public String readLine() {
-        String line = System.console().readLine();
-        return line;
+        return System.console().readLine();
     }
 }

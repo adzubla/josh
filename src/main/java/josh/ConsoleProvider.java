@@ -19,7 +19,7 @@ public interface ConsoleProvider {
 
     void displayWarning(String message);
 
-    void displayMessage(String message);
+    void displayInfo(String message);
 
     String readLine();
 }

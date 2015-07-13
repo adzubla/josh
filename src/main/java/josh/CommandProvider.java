@@ -14,4 +14,7 @@ public interface CommandProvider {
     List<CommandDescriptor> findCommands();
 
     HelpFormatter getHelpFormatter();
+
+    CommandOutcome execute(String line) throws CommandNotFound;
+
 }

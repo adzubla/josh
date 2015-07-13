@@ -3,7 +3,7 @@ package josh;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandProviderImpl implements CommandProvider, CommandExecutor {
+public class CommandProviderImpl implements CommandProvider {
 
     protected CommandParser commandParser;
     List<CommandDescriptor> commands;

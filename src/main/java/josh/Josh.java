@@ -19,12 +19,10 @@ public class Josh {
         CommandProviderImpl commandProvider = new CommandProviderImpl();
         commandProvider.setCommandParser(new CommandParserImpl());
         shell.setCommandProvider(commandProvider);
-        shell.setCommandExecutor(commandProvider);
 
-        shell.setConsoleProvider(new JavaConsoleProvider());
+        shell.setConsoleProvider(new BasicConsoleProvider());
 
         CommandOutcome co = shell.run();
-        System.out.println("exit code: " + co.getExitCode());
         System.exit(co.getExitCode());
     }
 

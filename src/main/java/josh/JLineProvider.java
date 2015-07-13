@@ -24,7 +24,7 @@ public class JLineProvider implements ConsoleProvider {
     }
 
     @Override
-    public void displayMessage(String message) {
+    public void displayInfo(String message) {
 
     }
 

@@ -1,7 +1,6 @@
 package josh;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -39,24 +38,21 @@ public class CommandParserImplTest {
         assertEquals(7, result.getArguments().size());
     }
 
-    @Ignore
     @Test
-    public void testParseLine2() throws Exception {
-        line = "\"my command\" --opt 'Alo \"Mundo\"!'";
+    public void testParseLineDoubleQuote() throws Exception {
+        line = "cmd --opt \"abc 123\" \"hello \\\"world\\\"!\"  ";
         result = commandParser.parseLine(line);
-        assertEquals("my command", result.getCommandName());
+        assertEquals("cmd", result.getCommandName());
         assertEquals("--opt", result.getArguments().get(0));
-        assertEquals("Alo \"Mundo\"!", result.getArguments().get(1));
+        assertEquals("abc 123", result.getArguments().get(1));
+        assertEquals("hello \"world\"!", result.getArguments().get(2));
+        assertEquals(3, result.getArguments().size());
     }
 
-    @Ignore
-    @Test
-    public void testParseLine3() throws Exception {
-        line = "'my command' --opt \"Alo 'Mundo'!\"";
+    @Test(expected = RuntimeException.class)
+    public void testParseLineDoubleQuoteError() throws Exception {
+        line = "cmd \"xxx";
         result = commandParser.parseLine(line);
-        assertEquals("my command", result.getCommandName());
-        assertEquals("--opt", result.getArguments().get(0));
-        assertEquals("Alo 'Mundo'!", result.getArguments().get(1));
     }
 
     private void print(ParseResult parseResult) {
@@ -66,4 +62,5 @@ public class CommandParserImplTest {
             System.out.println(arg);
         }
     }
+
 }
