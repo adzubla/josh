@@ -1,5 +1,7 @@
 package josh.api;
 
+import java.util.List;
+
 /**
  * Carrega os comandos disponíveis
  * - embedded
@@ -14,6 +16,6 @@ public interface CommandProvider {
 
     HelpFormatter getHelpFormatter();
 
-    CommandOutcome execute(String line) throws CommandNotFound;
+    CommandOutcome execute(List<String> args) throws CommandNotFound;
 
 }

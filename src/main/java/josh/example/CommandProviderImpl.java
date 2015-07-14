@@ -9,11 +9,9 @@ import josh.api.CommandNotFound;
 import josh.api.CommandOutcome;
 import josh.api.CommandProvider;
 import josh.api.HelpFormatter;
-import josh.impl.CommandParser;
 
 public class CommandProviderImpl implements CommandProvider {
 
-    protected CommandParser commandParser;
     protected Map<String, CommandDescriptor> commands;
 
     @Override
@@ -42,21 +40,8 @@ public class CommandProviderImpl implements CommandProvider {
         return null;
     }
 
-    public CommandParser getCommandParser() {
-        return commandParser;
-    }
-
-    public void setCommandParser(CommandParser commandParser) {
-        this.commandParser = commandParser;
-    }
-
-    // Mover para CommandExecutor???
     @Override
-    public CommandOutcome execute(String line) throws CommandNotFound {
-
-        CommandOutcome commandOutcome = new CommandOutcome();
-
-        List<String> tokens = commandParser.parseLine(line);
+    public CommandOutcome execute(List<String> tokens) throws CommandNotFound {
 
         String name = tokens.get(0);
         List<String> arguments = tokens.subList(1, tokens.size());
@@ -66,6 +51,11 @@ public class CommandProviderImpl implements CommandProvider {
             throw new CommandNotFound(name);
         }
 
+        return invokeCommand(commandDescriptor, arguments);
+    }
+
+    private CommandOutcome invokeCommand(CommandDescriptor commandDescriptor, List<String> arguments) {
+        CommandOutcome commandOutcome = new CommandOutcome();
         if ("date".equals(commandDescriptor.getCommandName())) {
             DateCommand dateCommand = new DateCommand();
             commandOutcome.setExitCode(dateCommand.run(arguments));
@@ -78,12 +68,7 @@ public class CommandProviderImpl implements CommandProvider {
             HelpCommand helpCommand = new HelpCommand(commands);
             commandOutcome.setExitCode(helpCommand.run(arguments));
         }
-
         return commandOutcome;
     }
-    /*
-    public CommandOutcome execute(String[] args) throws CommandNotFound {
 
-    }
-    */
 }

@@ -1,6 +1,10 @@
 package josh.example;
 
-import josh.api.CommandOutcome;
+import java.util.Arrays;
+
+import org.fusesource.jansi.Ansi;
+
+import josh.api.CommandNotFound;
 import josh.api.ConsoleProvider;
 import josh.api.Shell;
 import josh.impl.BasicConsoleProvider;
@@ -20,21 +24,46 @@ import josh.impl.JLineProvider;
  */
 public class Josh {
 
+    static boolean useJline = true;
+
     public static void main(String[] args) {
-        boolean interactive = true;
-
-        Shell shell = new Shell();
-
-        shell.setDisplayStackTraceOnError(true);
 
         CommandProviderImpl commandProvider = new CommandProviderImpl();
-        commandProvider.setCommandParser(new CommandParserImpl());
+        commandProvider.init();
+
+        int exitCode;
+        if (args.length == 0) {
+            exitCode = runInteractiveShell(commandProvider);
+        }
+        else {
+            exitCode = runSingleCommand(commandProvider, args);
+        }
+        System.exit(exitCode);
+    }
+
+    private static int runSingleCommand(CommandProviderImpl commandProvider, String[] args) {
+        try {
+            return commandProvider.execute(Arrays.asList(args)).getExitCode();
+        }
+        catch (CommandNotFound commandNotFound) {
+            return 127;
+        }
+    }
+
+    private static int runInteractiveShell(CommandProviderImpl commandProvider) {
+        Shell shell = new Shell();
+        shell.setDisplayStackTraceOnError(true);
+        shell.setCommandParser(new CommandParserImpl());
         shell.setCommandProvider(commandProvider);
 
         ConsoleProvider provider;
-        if (interactive) {
+        if (useJline) {
             JLineProvider jline = new JLineProvider();
             jline.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history");
+            jline.setPromptColor(Ansi.Color.CYAN);
+            jline.setInfoColor(Ansi.Color.GREEN);
+            jline.setWarnColor(Ansi.Color.YELLOW);
+            jline.setErrorColor(Ansi.Color.RED);
             provider = jline;
         }
         else {
@@ -44,9 +73,7 @@ public class Josh {
         provider.setPrompt("> ");
         shell.setConsoleProvider(provider);
 
-        CommandOutcome co = shell.run();
-
-        System.exit(co.getExitCode());
+        return shell.run().getExitCode();
     }
 
 }

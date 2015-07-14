@@ -3,19 +3,28 @@ package josh.impl;
 import java.io.File;
 import java.io.IOException;
 
+import org.fusesource.jansi.Ansi;
+
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
 import josh.api.ConsoleProvider;
+
+import static org.fusesource.jansi.Ansi.Color.DEFAULT;
+import static org.fusesource.jansi.Ansi.ansi;
 
 public class JLineProvider implements ConsoleProvider {
 
     ConsoleReader console;
     FileHistory history;
 
+    Ansi.Color promptColor = DEFAULT;
+    Ansi.Color errorColor = DEFAULT;
+    Ansi.Color warnColor = DEFAULT;
+    Ansi.Color infoColor = DEFAULT;
+
     public JLineProvider() {
         try {
             console = new ConsoleReader();
-            //console.setExpandEvents(false);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -39,7 +48,7 @@ public class JLineProvider implements ConsoleProvider {
 
     @Override
     public void setPrompt(String prompt) {
-        console.setPrompt(prompt);
+        console.setPrompt(ansi().fgBright(promptColor).a(prompt).reset().toString());
     }
 
     @Override
@@ -48,30 +57,22 @@ public class JLineProvider implements ConsoleProvider {
 
     @Override
     public void displayError(String message) {
-        try {
-            console.println(message);
-            console.flush();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        println(ansi().fg(errorColor).a(message).reset().toString());
     }
 
     @Override
     public void displayWarning(String message) {
-        try {
-            console.println(message);
-            console.flush();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        println(ansi().fg(warnColor).a(message).reset().toString());
     }
 
     @Override
     public void displayInfo(String message) {
+        println(ansi().fg(infoColor).a(message).reset().toString());
+    }
+
+    public void println(CharSequence charSequence) {
         try {
-            console.println(message);
+            console.println(charSequence);
             console.flush();
         }
         catch (IOException e) {
@@ -96,17 +97,45 @@ public class JLineProvider implements ConsoleProvider {
             //log.warn("could not create directory " + directory.getAbsolutePath());
         }
         try {
-            File file = new File(path, fileName);
-            {
-                System.out.println("*** " + file + "\t" + file.canWrite());
-            }
-            history = new FileHistory(file);
+            history = new FileHistory(new File(path, fileName));
             console.setHistoryEnabled(true);
             console.setHistory(history);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Ansi.Color getPromptColor() {
+        return promptColor;
+    }
+
+    public void setPromptColor(Ansi.Color promptColor) {
+        this.promptColor = promptColor;
+    }
+
+    public Ansi.Color getErrorColor() {
+        return errorColor;
+    }
+
+    public void setErrorColor(Ansi.Color errorColor) {
+        this.errorColor = errorColor;
+    }
+
+    public Ansi.Color getWarnColor() {
+        return warnColor;
+    }
+
+    public void setWarnColor(Ansi.Color warnColor) {
+        this.warnColor = warnColor;
+    }
+
+    public Ansi.Color getInfoColor() {
+        return infoColor;
+    }
+
+    public void setInfoColor(Ansi.Color infoColor) {
+        this.infoColor = infoColor;
     }
 
     public void setDebugMode() {

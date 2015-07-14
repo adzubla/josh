@@ -3,6 +3,8 @@ package josh.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import josh.api.CommandParser;
+
 public class CommandParserImpl implements CommandParser {
 
     public static final char SPACE_CHAR = ' ';

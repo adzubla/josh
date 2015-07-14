@@ -1,5 +1,8 @@
 package josh.api;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * Controla os componentes configurados
  * - inicializa comandos
@@ -14,31 +17,14 @@ package josh.api;
  */
 public class Shell {
 
-    private boolean quiet;
-    private boolean displayStackTraceOnError;
+    protected boolean quiet;
+    protected boolean displayStackTraceOnError;
 
-    private ConsoleProvider consoleProvider;
-    private CommandProvider commandProvider;
-
-    public boolean isDisplayStackTraceOnError() {
-        return displayStackTraceOnError;
-    }
-
-    public void setDisplayStackTraceOnError(boolean displayStackTraceOnError) {
-        this.displayStackTraceOnError = displayStackTraceOnError;
-    }
-
-    public ConsoleProvider getConsoleProvider() {
-        return consoleProvider;
-    }
-
-    public void setConsoleProvider(ConsoleProvider consoleProvider) {
-        this.consoleProvider = consoleProvider;
-    }
+    protected CommandProvider commandProvider;
+    protected CommandParser commandParser;
+    protected ConsoleProvider consoleProvider;
 
     public CommandOutcome run() {
-        commandProvider.init(); // mover???
-
         consoleProvider.initialize();
         displayWelcome();
 
@@ -78,18 +64,21 @@ public class Shell {
             }
             if (!line.trim().equals("")) {
                 try {
-                    outcome = commandProvider.execute(line);
+                    outcome = commandProvider.execute(commandParser.parseLine(line));
                     if (outcome.getExitCode() != 0) {
                         consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
                     }
                 }
                 catch (CommandNotFound e) {
-                    consoleProvider.displayError("Command " + e.getName() + " not found.");
+                    consoleProvider.displayWarning("Command " + e.getName() + " not found.");
                     outcome.setExitCode(127);
                 }
                 catch (RuntimeException e) {
                     if (displayStackTraceOnError) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
+                        consoleProvider.displayError(sw.toString());
                     }
                     consoleProvider.displayError("Error: " + e.getMessage());
                     outcome.setExitCode(126);
@@ -100,12 +89,36 @@ public class Shell {
         return outcome;
     }
 
+    public boolean isDisplayStackTraceOnError() {
+        return displayStackTraceOnError;
+    }
+
+    public void setDisplayStackTraceOnError(boolean displayStackTraceOnError) {
+        this.displayStackTraceOnError = displayStackTraceOnError;
+    }
+
     public CommandProvider getCommandProvider() {
         return commandProvider;
     }
 
     public void setCommandProvider(CommandProvider commandProvider) {
         this.commandProvider = commandProvider;
+    }
+
+    public CommandParser getCommandParser() {
+        return commandParser;
+    }
+
+    public void setCommandParser(CommandParser commandParser) {
+        this.commandParser = commandParser;
+    }
+
+    public ConsoleProvider getConsoleProvider() {
+        return consoleProvider;
+    }
+
+    public void setConsoleProvider(ConsoleProvider consoleProvider) {
+        this.consoleProvider = consoleProvider;
     }
 
 }
