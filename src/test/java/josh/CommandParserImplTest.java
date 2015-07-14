@@ -1,10 +1,11 @@
 package josh;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import josh.impl.CommandParserImpl;
-import josh.impl.ParseResult;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +13,7 @@ public class CommandParserImplTest {
 
     CommandParserImpl commandParser = new CommandParserImpl();
     String line;
-    ParseResult result;
+    List<String> result;
 
     @Before
     public void before() {
@@ -23,22 +24,22 @@ public class CommandParserImplTest {
     public void testParseLine0() throws Exception {
         line = "cmd";
         result = commandParser.parseLine(line);
-        assertEquals("cmd", result.getCommandName());
+        assertEquals("cmd", result.get(0));
     }
 
     @Test
     public void testParseLine1() throws Exception {
         line = "my-command --opt1 arg1 123  \t   4\t56789  --opt2 arg2";
         result = commandParser.parseLine(line);
-        assertEquals("my-command", result.getCommandName());
-        assertEquals("--opt1", result.getArguments().get(0));
-        assertEquals("arg1", result.getArguments().get(1));
-        assertEquals("123", result.getArguments().get(2));
-        assertEquals("4", result.getArguments().get(3));
-        assertEquals("56789", result.getArguments().get(4));
-        assertEquals("--opt2", result.getArguments().get(5));
-        assertEquals("arg2", result.getArguments().get(6));
-        assertEquals(7, result.getArguments().size());
+        assertEquals("my-command", result.get(0));
+        assertEquals("--opt1", result.get(1));
+        assertEquals("arg1", result.get(2));
+        assertEquals("123", result.get(3));
+        assertEquals("4", result.get(4));
+        assertEquals("56789", result.get(5));
+        assertEquals("--opt2", result.get(6));
+        assertEquals("arg2", result.get(7));
+        assertEquals(8, result.size());
     }
 
     @Test(expected = RuntimeException.class)
@@ -51,34 +52,26 @@ public class CommandParserImplTest {
     public void testParseLineDoubleQuote1() throws Exception {
         line = "\"xxx yyy\"";
         result = commandParser.parseLine(line);
-        assertEquals("xxx yyy", result.getCommandName());
+        assertEquals("xxx yyy", result.get(0));
 
         line = "\"xxx \\\"! @\\\" yyy\"";
         result = commandParser.parseLine(line);
-        assertEquals("xxx \"! @\" yyy", result.getCommandName());
+        assertEquals("xxx \"! @\" yyy", result.get(0));
 
         line = "xy\\\"zw";
         result = commandParser.parseLine(line);
-        assertEquals("xy\"zw", result.getCommandName());
+        assertEquals("xy\"zw", result.get(0));
     }
 
     @Test
     public void testParseLineDoubleQuote2() throws Exception {
         line = "    cmd --opt \"abc 123\" \"hello \\\"world\\\"!\"    ";
         result = commandParser.parseLine(line);
-        assertEquals("cmd", result.getCommandName());
-        assertEquals("--opt", result.getArguments().get(0));
-        assertEquals("abc 123", result.getArguments().get(1));
-        assertEquals("hello \"world\"!", result.getArguments().get(2));
-        assertEquals(3, result.getArguments().size());
-    }
-
-    private void print(ParseResult parseResult) {
-        System.out.println("Command: " + parseResult.getCommandName());
-        System.out.println("Arguments:");
-        for (String arg : parseResult.getArguments()) {
-            System.out.println(arg);
-        }
+        assertEquals("cmd", result.get(0));
+        assertEquals("--opt", result.get(1));
+        assertEquals("abc 123", result.get(2));
+        assertEquals("hello \"world\"!", result.get(3));
+        assertEquals(4, result.size());
     }
 
 }

@@ -1,6 +1,7 @@
 package josh.example;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import josh.api.CommandDescriptor;
@@ -9,7 +10,6 @@ import josh.api.CommandOutcome;
 import josh.api.CommandProvider;
 import josh.api.HelpFormatter;
 import josh.impl.CommandParser;
-import josh.impl.ParseResult;
 
 public class CommandProviderImpl implements CommandProvider {
 
@@ -56,29 +56,32 @@ public class CommandProviderImpl implements CommandProvider {
 
         CommandOutcome commandOutcome = new CommandOutcome();
 
-        ParseResult result = commandParser.parseLine(line);
+        List<String> tokens = commandParser.parseLine(line);
 
-        CommandDescriptor commandDescriptor = commands.get(result.getCommandName());
+        String name = tokens.get(0);
+        List<String> arguments = tokens.subList(1, tokens.size());
+
+        CommandDescriptor commandDescriptor = commands.get(name);
         if (commandDescriptor == null) {
-            throw new CommandNotFound(result.getCommandName());
+            throw new CommandNotFound(name);
         }
 
         if ("date".equals(commandDescriptor.getCommandName())) {
             DateCommand dateCommand = new DateCommand();
-            commandOutcome.setExitCode(dateCommand.run(result.getArguments()));
+            commandOutcome.setExitCode(dateCommand.run(arguments));
         }
         else if ("echo".equals(commandDescriptor.getCommandName())) {
             EchoCommand echoCommand = new EchoCommand();
-            commandOutcome.setExitCode(echoCommand.run(result.getArguments()));
+            commandOutcome.setExitCode(echoCommand.run(arguments));
         }
         else if ("help".equals(commandDescriptor.getCommandName())) {
             HelpCommand helpCommand = new HelpCommand(commands);
-            commandOutcome.setExitCode(helpCommand.run(result.getArguments()));
+            commandOutcome.setExitCode(helpCommand.run(arguments));
         }
 
         return commandOutcome;
     }
-/*
+    /*
     public CommandOutcome execute(String[] args) throws CommandNotFound {
 
     }

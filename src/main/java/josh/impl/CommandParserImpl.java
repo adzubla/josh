@@ -11,7 +11,7 @@ public class CommandParserImpl implements CommandParser {
     public static final char BACKSLASH_CHAR = '\\';
 
     @Override
-    public ParseResult parseLine(String line) {
+    public List<String> parseLine(String line) {
         List<String> tokens = new ArrayList<String>();
 
         StringBuilder token = new StringBuilder();
@@ -43,11 +43,7 @@ public class CommandParserImpl implements CommandParser {
             tokens.add(token.toString());
         }
 
-        ParseResult parseResult = new ParseResult();
-        parseResult.setCommandName(tokens.get(0));
-        parseResult.setArguments(tokens.subList(1, tokens.size()));
-
-        return parseResult;
+        return tokens;
     }
 
 }
