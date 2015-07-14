@@ -25,7 +25,7 @@ public class CommandParserImplTest {
 
     @Test
     public void testParseLine1() throws Exception {
-        line = "   my-command --opt1 arg1 123  \t   4\t56789  --opt2 arg2";
+        line = "my-command --opt1 arg1 123  \t   4\t56789  --opt2 arg2";
         result = commandParser.parseLine(line);
         assertEquals("my-command", result.getCommandName());
         assertEquals("--opt1", result.getArguments().get(0));
@@ -38,21 +38,36 @@ public class CommandParserImplTest {
         assertEquals(7, result.getArguments().size());
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testParseLineDoubleQuoteError() throws Exception {
+        line = "xxx\"xxx";
+        result = commandParser.parseLine(line);
+    }
+
     @Test
-    public void testParseLineDoubleQuote() throws Exception {
-        line = "cmd --opt \"abc 123\" \"hello \\\"world\\\"!\"  ";
+    public void testParseLineDoubleQuote1() throws Exception {
+        line = "\"xxx yyy\"";
+        result = commandParser.parseLine(line);
+        assertEquals("xxx yyy", result.getCommandName());
+
+        line = "\"xxx \\\"! @\\\" yyy\"";
+        result = commandParser.parseLine(line);
+        assertEquals("xxx \"! @\" yyy", result.getCommandName());
+
+        line = "xy\\\"zw";
+        result = commandParser.parseLine(line);
+        assertEquals("xy\"zw", result.getCommandName());
+    }
+
+    @Test
+    public void testParseLineDoubleQuote2() throws Exception {
+        line = "    cmd --opt \"abc 123\" \"hello \\\"world\\\"!\"    ";
         result = commandParser.parseLine(line);
         assertEquals("cmd", result.getCommandName());
         assertEquals("--opt", result.getArguments().get(0));
         assertEquals("abc 123", result.getArguments().get(1));
         assertEquals("hello \"world\"!", result.getArguments().get(2));
         assertEquals(3, result.getArguments().size());
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void testParseLineDoubleQuoteError() throws Exception {
-        line = "cmd \"xxx";
-        result = commandParser.parseLine(line);
     }
 
     private void print(ParseResult parseResult) {

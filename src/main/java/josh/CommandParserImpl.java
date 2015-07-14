@@ -28,6 +28,7 @@ public class CommandParserImpl implements CommandParser {
             } else {
                 if (c == BACKSLASH_CHAR && line.charAt(i + 1) == DOUBLE_QUOTE_CHAR) {
                     c = DOUBLE_QUOTE_CHAR;
+                    i++;
                 }
                 token.append((char) c);
             }
