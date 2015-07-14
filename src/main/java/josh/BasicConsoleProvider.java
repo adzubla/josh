@@ -1,13 +1,6 @@
 package josh;
 
-import java.util.List;
-
 public class BasicConsoleProvider implements ConsoleProvider {
-
-    @Override
-    public void configCompletion(List<CommandDescriptor> commands) {
-
-    }
 
     @Override
     public void displayPrompt() {

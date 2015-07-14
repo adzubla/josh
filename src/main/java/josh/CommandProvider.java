@@ -1,7 +1,5 @@
 package josh;
 
-import java.util.List;
-
 /**
  * Carrega os comandos disponíveis
  * - embedded
@@ -11,7 +9,7 @@ import java.util.List;
  * - diretório com .groovy
  */
 public interface CommandProvider {
-    List<CommandDescriptor> findCommands();
+    void init();
 
     HelpFormatter getHelpFormatter();
 

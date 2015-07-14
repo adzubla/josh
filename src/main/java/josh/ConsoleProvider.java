@@ -1,7 +1,5 @@
 package josh;
 
-import java.util.List;
-
 /**
  * Realiza as operações de input/output (classes separadas?)
  * - edição da linha
@@ -11,7 +9,6 @@ import java.util.List;
  */
 // TextDevice
 public interface ConsoleProvider {
-    void configCompletion(List<CommandDescriptor> commands);
 
     void displayPrompt();
 

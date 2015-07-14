@@ -1,22 +1,32 @@
 package josh;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommandProviderImpl implements CommandProvider {
 
     protected CommandParser commandParser;
-    List<CommandDescriptor> commands;
+    protected Map<String, CommandDescriptor> commands;
 
     @Override
-    public List<CommandDescriptor> findCommands() {
+    public void init() {
+
         CommandDescriptor dateDescriptor = new CommandDescriptor();
         dateDescriptor.setCommandName("date");
         dateDescriptor.setCommandDescription("Display current date.");
 
-        commands = new ArrayList<CommandDescriptor>();
-        commands.add(dateDescriptor);
-        return commands;
+        CommandDescriptor echoDescriptor = new CommandDescriptor();
+        echoDescriptor.setCommandName("echo");
+        echoDescriptor.setCommandDescription("Echo parameters.");
+
+        CommandDescriptor helpDescriptor = new CommandDescriptor();
+        helpDescriptor.setCommandName("help");
+        helpDescriptor.setCommandDescription("Display commands.");
+
+        commands = new HashMap<String, CommandDescriptor>();
+        commands.put(dateDescriptor.getCommandName(), dateDescriptor);
+        commands.put(echoDescriptor.getCommandName(), echoDescriptor);
+        commands.put(helpDescriptor.getCommandName(), helpDescriptor);
     }
 
     @Override
@@ -40,13 +50,22 @@ public class CommandProviderImpl implements CommandProvider {
 
         ParseResult result = commandParser.parseLine(line);
 
-        if ("date".equals(result.getCommandName())) {
-            DateCommand dateCommand = new DateCommand();
-            dateCommand.run(result.getArguments());
-            commandOutcome.setExitCode(0);
-        } else {
+        CommandDescriptor commandDescriptor = commands.get(result.getCommandName());
+        if (commandDescriptor == null) {
             throw new CommandNotFound(result.getCommandName());
         }
+
+        if ("date".equals(commandDescriptor.getCommandName())) {
+            DateCommand dateCommand = new DateCommand();
+            commandOutcome.setExitCode(dateCommand.run(result.getArguments()));
+        } else if ("echo".equals(commandDescriptor.getCommandName())) {
+            EchoCommand echoCommand = new EchoCommand();
+            commandOutcome.setExitCode(echoCommand.run(result.getArguments()));
+        } else if ("help".equals(commandDescriptor.getCommandName())) {
+            HelpCommand helpCommand = new HelpCommand(commands);
+            commandOutcome.setExitCode(helpCommand.run(result.getArguments()));
+        }
+
         return commandOutcome;
     }
 

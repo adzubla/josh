@@ -29,6 +29,9 @@ public class Shell {
 
     public CommandOutcome run() {
         displayBanner();
+
+        commandProvider.init();
+
         return repl();
     }
 
@@ -56,7 +59,7 @@ public class Shell {
             }
             if (!line.trim().equals("")) {
                 try {
-                    outcome = execute(line);
+                    outcome = commandProvider.execute(line);
                     if (outcome.getExitCode() != 0) {
                         consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
                     }
@@ -64,17 +67,13 @@ public class Shell {
                     consoleProvider.displayError("Command " + e.getName() + " not found.");
                     outcome.setExitCode(127);
                 } catch (RuntimeException e) {
+                    e.printStackTrace();
                     consoleProvider.displayError("Error: " + e.getMessage());
                     outcome.setExitCode(126);
                 }
             }
         }
 
-        return outcome;
-    }
-
-    CommandOutcome execute(String line) throws CommandNotFound {
-        CommandOutcome outcome = commandProvider.execute(line);
         return outcome;
     }
 
