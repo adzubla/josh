@@ -1,7 +1,9 @@
-package josh;
+package josh.example;
 
 import java.util.List;
 import java.util.Map;
+
+import josh.api.CommandDescriptor;
 
 public class HelpCommand {
 

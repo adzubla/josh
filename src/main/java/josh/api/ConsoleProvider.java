@@ -1,4 +1,4 @@
-package josh;
+package josh.api;
 
 /**
  * Realiza as operações de input/output (classes separadas?)
@@ -9,6 +9,12 @@ package josh;
  */
 // TextDevice
 public interface ConsoleProvider {
+
+    void initialize();
+
+    void destroy();
+
+    void setPrompt(String prompt);
 
     void displayPrompt();
 

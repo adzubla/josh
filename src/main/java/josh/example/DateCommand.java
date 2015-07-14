@@ -1,4 +1,4 @@
-package josh;
+package josh.example;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,10 +14,12 @@ public class DateCommand {
 
         if (arguments.isEmpty()) {
             System.out.println(currentDate);
-        } else if (arguments.size() == 1) {
+        }
+        else if (arguments.size() == 1) {
             SimpleDateFormat sdf = new SimpleDateFormat(arguments.get(0));
             System.out.println(sdf.format(currentDate));
-        } else {
+        }
+        else {
             //throw new RuntimeException("Invalid arguments.");
             return 1;
         }

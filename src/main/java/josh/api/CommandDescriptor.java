@@ -1,4 +1,4 @@
-package josh;
+package josh.api;
 
 public class CommandDescriptor {
 

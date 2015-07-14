@@ -1,7 +1,15 @@
-package josh;
+package josh.example;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import josh.api.CommandDescriptor;
+import josh.api.CommandNotFound;
+import josh.api.CommandOutcome;
+import josh.api.CommandProvider;
+import josh.api.HelpFormatter;
+import josh.impl.CommandParser;
+import josh.impl.ParseResult;
 
 public class CommandProviderImpl implements CommandProvider {
 
@@ -58,15 +66,21 @@ public class CommandProviderImpl implements CommandProvider {
         if ("date".equals(commandDescriptor.getCommandName())) {
             DateCommand dateCommand = new DateCommand();
             commandOutcome.setExitCode(dateCommand.run(result.getArguments()));
-        } else if ("echo".equals(commandDescriptor.getCommandName())) {
+        }
+        else if ("echo".equals(commandDescriptor.getCommandName())) {
             EchoCommand echoCommand = new EchoCommand();
             commandOutcome.setExitCode(echoCommand.run(result.getArguments()));
-        } else if ("help".equals(commandDescriptor.getCommandName())) {
+        }
+        else if ("help".equals(commandDescriptor.getCommandName())) {
             HelpCommand helpCommand = new HelpCommand(commands);
             commandOutcome.setExitCode(helpCommand.run(result.getArguments()));
         }
 
         return commandOutcome;
     }
+/*
+    public CommandOutcome execute(String[] args) throws CommandNotFound {
 
+    }
+    */
 }

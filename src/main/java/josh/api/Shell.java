@@ -1,4 +1,4 @@
-package josh;
+package josh.api;
 
 /**
  * Controla os componentes configurados
@@ -14,10 +14,19 @@ package josh;
  */
 public class Shell {
 
-    private boolean quiet = false;
+    private boolean quiet;
+    private boolean displayStackTraceOnError;
 
     private ConsoleProvider consoleProvider;
     private CommandProvider commandProvider;
+
+    public boolean isDisplayStackTraceOnError() {
+        return displayStackTraceOnError;
+    }
+
+    public void setDisplayStackTraceOnError(boolean displayStackTraceOnError) {
+        this.displayStackTraceOnError = displayStackTraceOnError;
+    }
 
     public ConsoleProvider getConsoleProvider() {
         return consoleProvider;
@@ -28,14 +37,20 @@ public class Shell {
     }
 
     public CommandOutcome run() {
-        displayBanner();
+        commandProvider.init(); // mover???
 
-        commandProvider.init();
+        consoleProvider.initialize();
+        displayWelcome();
 
-        return repl();
+        CommandOutcome commandOutcome = repl();
+
+        displayGoodbye();
+        consoleProvider.destroy();
+
+        return commandOutcome;
     }
 
-    protected void displayBanner() {
+    protected void displayWelcome() {
         String banner = "   _           _     \n" +
                 "  (_) ___  ___| |__  \n" +
                 "  | |/ _ \\/ __| '_ \\ \n" +
@@ -45,6 +60,10 @@ public class Shell {
         consoleProvider.displayInfo(banner);
         consoleProvider.displayInfo("Press Ctrl-D to exit shell.");
         consoleProvider.displayInfo("");
+    }
+
+    protected void displayGoodbye() {
+        consoleProvider.displayInfo("Goodbye!");
     }
 
     protected CommandOutcome repl() {
@@ -63,11 +82,15 @@ public class Shell {
                     if (outcome.getExitCode() != 0) {
                         consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
                     }
-                } catch (CommandNotFound e) {
+                }
+                catch (CommandNotFound e) {
                     consoleProvider.displayError("Command " + e.getName() + " not found.");
                     outcome.setExitCode(127);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
+                }
+                catch (RuntimeException e) {
+                    if (displayStackTraceOnError) {
+                        e.printStackTrace();
+                    }
                     consoleProvider.displayError("Error: " + e.getMessage());
                     outcome.setExitCode(126);
                 }

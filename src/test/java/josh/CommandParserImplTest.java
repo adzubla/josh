@@ -3,6 +3,9 @@ package josh;
 import org.junit.Before;
 import org.junit.Test;
 
+import josh.impl.CommandParserImpl;
+import josh.impl.ParseResult;
+
 import static org.junit.Assert.assertEquals;
 
 public class CommandParserImplTest {

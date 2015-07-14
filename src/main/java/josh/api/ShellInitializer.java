@@ -1,4 +1,4 @@
-package josh;
+package josh.api;
 
 /**
  * Inicializa contexto do shell, mostra banner

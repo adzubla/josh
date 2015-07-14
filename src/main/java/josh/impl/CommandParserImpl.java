@@ -1,4 +1,4 @@
-package josh;
+package josh.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +20,19 @@ public class CommandParserImpl implements CommandParser {
             int c = line.charAt(i);
             if (c == DOUBLE_QUOTE_CHAR) {
                 insideDoubleQuote = !insideDoubleQuote;
-            } else if (!insideDoubleQuote && c == SPACE_CHAR || c == TAB_CHAR) {
+            }
+            else if (!insideDoubleQuote && c == SPACE_CHAR || c == TAB_CHAR) {
                 if (token.length() > 0) {
                     tokens.add(token.toString());
                     token = new StringBuilder();
                 }
-            } else {
+            }
+            else {
                 if (c == BACKSLASH_CHAR && line.charAt(i + 1) == DOUBLE_QUOTE_CHAR) {
                     c = DOUBLE_QUOTE_CHAR;
                     i++;
                 }
-                token.append((char) c);
+                token.append((char)c);
             }
         }
         if (insideDoubleQuote) {

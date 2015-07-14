@@ -1,6 +1,7 @@
-package josh;
+package josh.api;
 
 public class CommandOutcome {
+
     private int exitCode;
 
     public int getExitCode() {

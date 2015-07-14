@@ -1,4 +1,6 @@
-package josh;
+package josh.impl;
+
+import josh.api.CommandProvider;
 
 /**
  * Permite juntar comandos de várias fontes

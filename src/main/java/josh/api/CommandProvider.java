@@ -1,4 +1,4 @@
-package josh;
+package josh.api;
 
 /**
  * Carrega os comandos disponíveis
@@ -9,6 +9,7 @@ package josh;
  * - diretório com .groovy
  */
 public interface CommandProvider {
+
     void init();
 
     HelpFormatter getHelpFormatter();
