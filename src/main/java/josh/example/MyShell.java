@@ -54,7 +54,8 @@ public class MyShell {
         shell.setDisplayStackTraceOnError(true);
         shell.setExitOnError(false);
         shell.setCommandParser(new CommandParserImpl());
-        shell.setCommandProvider(commandProvider);
+        shell.setInitializer(new MyShellInitializer());
+        shell.setFinalizer(new MyShellFinalizer());
 
         ConsoleProvider provider;
         if (useJline) {
@@ -70,9 +71,10 @@ public class MyShell {
         else {
             provider = new BasicConsoleProvider();
         }
-
         provider.setPrompt("> ");
         shell.setConsoleProvider(provider);
+
+        shell.setCommandProvider(commandProvider);
 
         return shell.run().getExitCode();
     }

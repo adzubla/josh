@@ -28,35 +28,28 @@ public class Shell {
     protected CommandParser commandParser;
     protected ConsoleProvider consoleProvider;
 
+    protected ShellInitializer initializer;
+    protected ShellFinalizer finalizer;
+
     public CommandOutcome run() {
         LOG.info("Starting shell");
 
         consoleProvider.initialize();
-        displayWelcome();
+
+        if (initializer != null) {
+            initializer.initialize(this);
+        }
 
         CommandOutcome commandOutcome = repl();
 
-        displayGoodbye();
+        if (finalizer != null) {
+            finalizer.destroy(this);
+        }
+
         consoleProvider.destroy();
 
         LOG.info("Ending shell");
         return commandOutcome;
-    }
-
-    protected void displayWelcome() {
-        String banner = "   _           _     \n" +
-                "  (_) ___  ___| |__  \n" +
-                "  | |/ _ \\/ __| '_ \\ \n" +
-                "  | | (_) \\__ \\ | | |\n" +
-                " _/ |\\___/|___/_| |_|\n" +
-                "|__/                 \n";
-        consoleProvider.displayInfo(banner);
-        consoleProvider.displayInfo("Press Ctrl-D to exit shell.");
-        consoleProvider.displayInfo("");
-    }
-
-    protected void displayGoodbye() {
-        consoleProvider.displayInfo("Goodbye!");
     }
 
     protected CommandOutcome repl() {
@@ -149,4 +142,19 @@ public class Shell {
         this.consoleProvider = consoleProvider;
     }
 
+    public ShellInitializer getInitializer() {
+        return initializer;
+    }
+
+    public void setInitializer(ShellInitializer initializer) {
+        this.initializer = initializer;
+    }
+
+    public ShellFinalizer getFinalizer() {
+        return finalizer;
+    }
+
+    public void setFinalizer(ShellFinalizer finalizer) {
+        this.finalizer = finalizer;
+    }
 }

@@ -7,6 +7,7 @@ import org.fusesource.jansi.Ansi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
 import josh.api.ConsoleProvider;
@@ -27,6 +28,7 @@ public class JLineProvider implements ConsoleProvider {
 
     public JLineProvider() {
         try {
+            System.setProperty("jline.shutdownhook", "true");
             console = new ConsoleReader();
         }
         catch (IOException e) {
@@ -42,12 +44,18 @@ public class JLineProvider implements ConsoleProvider {
     public void destroy() {
         console.shutdown();
         try {
+            TerminalFactory.get().restore();
+        }
+        catch (Exception e) {
+            LOG.error("TerminalFactory reset error", e);
+        }
+        try {
             if (history != null) {
                 history.flush();
             }
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            LOG.error("history flush error", e);
         }
     }
 
