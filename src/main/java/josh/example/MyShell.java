@@ -59,7 +59,7 @@ public class MyShell {
         ConsoleProvider provider;
         if (useJline) {
             JLineProvider jline = new JLineProvider();
-            jline.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history");
+            jline.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
             jline.setPromptColor(Ansi.Color.CYAN);
             jline.setInfoColor(Ansi.Color.GREEN);
             jline.setWarnColor(Ansi.Color.YELLOW);

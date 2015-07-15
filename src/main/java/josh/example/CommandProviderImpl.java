@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import josh.api.CommandDescriptor;
 import josh.api.CommandNotFound;
 import josh.api.CommandOutcome;
@@ -13,6 +16,7 @@ import josh.api.HelpFormatter;
 import josh.impl.JLineProvider;
 
 public class CommandProviderImpl implements CommandProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(CommandProviderImpl.class);
 
     protected Map<String, CommandDescriptor> commands;
 
@@ -45,6 +49,8 @@ public class CommandProviderImpl implements CommandProvider {
         commands.put(helpDescriptor.getCommandName(), helpDescriptor);
         commands.put(clsDescriptor.getCommandName(), clsDescriptor);
         commands.put(exitDescriptor.getCommandName(), exitDescriptor);
+
+        LOG.debug("commands = {}", commands);
     }
 
     @Override
@@ -67,6 +73,8 @@ public class CommandProviderImpl implements CommandProvider {
     }
 
     private CommandOutcome invokeCommand(CommandDescriptor commandDescriptor, List<String> arguments) {
+        LOG.debug("invokeCommand {}, {}", commandDescriptor.getCommandName(), arguments);
+
         CommandOutcome commandOutcome = new CommandOutcome();
         if ("date".equals(commandDescriptor.getCommandName())) {
             DateCommand dateCommand = new DateCommand();
@@ -86,7 +94,7 @@ public class CommandProviderImpl implements CommandProvider {
                 jLineProvider.getConsole().clearScreen();
             }
             catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("cls errror", e);
             }
         }
         else if ("exit".equals(commandDescriptor.getCommandName())) {

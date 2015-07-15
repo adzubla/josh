@@ -3,7 +3,7 @@ package josh.api;
 public class CommandDescriptor {
 
     protected String commandName;
-    private String commandDescription;
+    protected String commandDescription;
 
     public String getCommandName() {
         return commandName;
@@ -19,5 +19,13 @@ public class CommandDescriptor {
 
     public void setCommandDescription(String commandDescription) {
         this.commandDescription = commandDescription;
+    }
+
+    @Override
+    public String toString() {
+        return "CommandDescriptor{" +
+                "commandName='" + commandName + '\'' +
+                ", commandDescription='" + commandDescription + '\'' +
+                '}';
     }
 }

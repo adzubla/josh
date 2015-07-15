@@ -2,8 +2,8 @@ package josh.api;
 
 public class CommandOutcome {
 
-    private int exitCode;
-    private boolean exitRequest;
+    protected int exitCode;
+    protected boolean exitRequest;
 
     public int getExitCode() {
         return exitCode;
@@ -27,5 +27,13 @@ public class CommandOutcome {
 
     public boolean isErrorState() {
         return exitCode != 0;
+    }
+
+    @Override
+    public String toString() {
+        return "CommandOutcome{" +
+                "exitCode=" + exitCode +
+                ", exitRequest=" + exitRequest +
+                '}';
     }
 }

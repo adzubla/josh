@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.fusesource.jansi.Ansi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
@@ -13,6 +15,7 @@ import static org.fusesource.jansi.Ansi.Color.DEFAULT;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class JLineProvider implements ConsoleProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(JLineProvider.class);
 
     ConsoleReader console;
     FileHistory history;
@@ -37,13 +40,15 @@ public class JLineProvider implements ConsoleProvider {
 
     @Override
     public void destroy() {
+        console.shutdown();
         try {
-            history.flush();
+            if (history != null) {
+                history.flush();
+            }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        console.shutdown();
     }
 
     @Override
@@ -90,19 +95,33 @@ public class JLineProvider implements ConsoleProvider {
         }
     }
 
-    // Not working ????
-    public void setHistory(String path, String fileName) {
+    public void setHistory(String path, String fileName, int maxSize) {
         File directory = new File(path);
-        if (!directory.mkdirs()) {
-            //log.warn("could not create directory " + directory.getAbsolutePath());
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                String msg = "Could not create directory " + directory.getAbsolutePath();
+                LOG.warn(msg);
+                println(msg);
+                return;
+            }
         }
+        else if (!directory.isDirectory()) {
+            String msg = "File " + directory.getAbsolutePath() + " already exists";
+            LOG.warn(msg);
+            println(msg);
+            return;
+        }
+
+        File file = new File(path, fileName);
         try {
-            history = new FileHistory(new File(path, fileName));
-            console.setHistoryEnabled(true);
+            history = new FileHistory(file);
+            history.setMaxSize(maxSize);
             console.setHistory(history);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            String msg = "Error acessing file " + file.getAbsolutePath();
+            LOG.error(msg);
+            println(msg);
         }
     }
 

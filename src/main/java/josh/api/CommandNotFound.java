@@ -2,7 +2,7 @@ package josh.api;
 
 public class CommandNotFound extends Throwable {
 
-    String name;
+    protected String name;
 
     public CommandNotFound(String name) {
         this.name = name;
