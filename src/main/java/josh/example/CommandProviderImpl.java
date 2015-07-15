@@ -1,5 +1,6 @@
 package josh.example;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +10,15 @@ import josh.api.CommandNotFound;
 import josh.api.CommandOutcome;
 import josh.api.CommandProvider;
 import josh.api.HelpFormatter;
+import josh.impl.JLineProvider;
 
 public class CommandProviderImpl implements CommandProvider {
 
     protected Map<String, CommandDescriptor> commands;
 
-    @Override
-    public void init() {
+    protected JLineProvider jLineProvider;
 
+    public CommandProviderImpl() {
         CommandDescriptor dateDescriptor = new CommandDescriptor();
         dateDescriptor.setCommandName("date");
         dateDescriptor.setCommandDescription("Display current date.");
@@ -29,10 +31,20 @@ public class CommandProviderImpl implements CommandProvider {
         helpDescriptor.setCommandName("help");
         helpDescriptor.setCommandDescription("Display commands.");
 
+        CommandDescriptor clsDescriptor = new CommandDescriptor();
+        clsDescriptor.setCommandName("cls");
+        clsDescriptor.setCommandDescription("Clear screen.");
+
+        CommandDescriptor exitDescriptor = new CommandDescriptor();
+        exitDescriptor.setCommandName("exit");
+        exitDescriptor.setCommandDescription("Exit shell.");
+
         commands = new HashMap<String, CommandDescriptor>();
         commands.put(dateDescriptor.getCommandName(), dateDescriptor);
         commands.put(echoDescriptor.getCommandName(), echoDescriptor);
         commands.put(helpDescriptor.getCommandName(), helpDescriptor);
+        commands.put(clsDescriptor.getCommandName(), clsDescriptor);
+        commands.put(exitDescriptor.getCommandName(), exitDescriptor);
     }
 
     @Override
@@ -68,7 +80,27 @@ public class CommandProviderImpl implements CommandProvider {
             HelpCommand helpCommand = new HelpCommand(commands);
             commandOutcome.setExitCode(helpCommand.run(arguments));
         }
+        // "built-in" commands
+        else if ("cls".equals(commandDescriptor.getCommandName())) {
+            try {
+                jLineProvider.getConsole().clearScreen();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if ("exit".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitRequest();
+        }
         return commandOutcome;
+    }
+
+    public JLineProvider getjLineProvider() {
+        return jLineProvider;
+    }
+
+    public void setjLineProvider(JLineProvider jLineProvider) {
+        this.jLineProvider = jLineProvider;
     }
 
 }

@@ -22,14 +22,13 @@ import josh.impl.JLineProvider;
  * josh -v key=value
  * josh
  */
-public class Josh {
+public class MyShell {
 
     static boolean useJline = true;
 
     public static void main(String[] args) {
 
         CommandProviderImpl commandProvider = new CommandProviderImpl();
-        commandProvider.init();
 
         int exitCode;
         if (args.length == 0) {
@@ -53,6 +52,7 @@ public class Josh {
     private static int runInteractiveShell(CommandProviderImpl commandProvider) {
         Shell shell = new Shell();
         shell.setDisplayStackTraceOnError(true);
+        shell.setExitOnError(false);
         shell.setCommandParser(new CommandParserImpl());
         shell.setCommandProvider(commandProvider);
 
@@ -65,6 +65,7 @@ public class Josh {
             jline.setWarnColor(Ansi.Color.YELLOW);
             jline.setErrorColor(Ansi.Color.RED);
             provider = jline;
+            commandProvider.setjLineProvider(jline);
         }
         else {
             provider = new BasicConsoleProvider();

@@ -17,8 +17,8 @@ import java.io.StringWriter;
  */
 public class Shell {
 
-    protected boolean quiet;
     protected boolean displayStackTraceOnError;
+    protected boolean exitOnError;
 
     protected CommandProvider commandProvider;
     protected CommandParser commandParser;
@@ -75,13 +75,18 @@ public class Shell {
                 }
                 catch (RuntimeException e) {
                     if (displayStackTraceOnError) {
-                        //e.printStackTrace();
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
                         consoleProvider.displayError(sw.toString());
                     }
                     consoleProvider.displayError("Error: " + e.getMessage());
                     outcome.setExitCode(126);
+                }
+                if (exitOnError && outcome.isErrorState()) {
+                    break;
+                }
+                if (outcome.isExitRequest()) {
+                    break;
                 }
             }
         }
@@ -95,6 +100,14 @@ public class Shell {
 
     public void setDisplayStackTraceOnError(boolean displayStackTraceOnError) {
         this.displayStackTraceOnError = displayStackTraceOnError;
+    }
+
+    public boolean isExitOnError() {
+        return exitOnError;
+    }
+
+    public void setExitOnError(boolean exitOnError) {
+        this.exitOnError = exitOnError;
     }
 
     public CommandProvider getCommandProvider() {

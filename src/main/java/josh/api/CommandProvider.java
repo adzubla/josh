@@ -12,8 +12,6 @@ import java.util.List;
  */
 public interface CommandProvider {
 
-    void init();
-
     HelpFormatter getHelpFormatter();
 
     CommandOutcome execute(List<String> args) throws CommandNotFound;

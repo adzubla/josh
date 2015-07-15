@@ -106,6 +106,10 @@ public class JLineProvider implements ConsoleProvider {
         }
     }
 
+    public ConsoleReader getConsole() {
+        return console;
+    }
+
     public Ansi.Color getPromptColor() {
         return promptColor;
     }
