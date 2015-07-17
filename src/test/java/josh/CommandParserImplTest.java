@@ -23,14 +23,26 @@ public class CommandParserImplTest {
     @Test
     public void testParseLine0() throws Exception {
         line = "cmd";
-        result = commandParser.parseLine(line);
+        result = commandParser.getTokens(line);
+        assertEquals("cmd", result.get(0));
+
+        line = " cmd";
+        result = commandParser.getTokens(line);
+        assertEquals("cmd", result.get(0));
+
+        line = "cmd ";
+        result = commandParser.getTokens(line);
+        assertEquals("cmd", result.get(0));
+
+        line = " cmd ";
+        result = commandParser.getTokens(line);
         assertEquals("cmd", result.get(0));
     }
 
     @Test
     public void testParseLine1() throws Exception {
         line = "my-command --opt1 arg1 123  \t   4\t56789  --opt2 arg2";
-        result = commandParser.parseLine(line);
+        result = commandParser.getTokens(line);
         assertEquals("my-command", result.get(0));
         assertEquals("--opt1", result.get(1));
         assertEquals("arg1", result.get(2));
@@ -45,28 +57,50 @@ public class CommandParserImplTest {
     @Test(expected = RuntimeException.class)
     public void testParseLineDoubleQuoteError() throws Exception {
         line = "xxx\"xxx";
-        result = commandParser.parseLine(line);
+        result = commandParser.getTokens(line);
     }
 
     @Test
     public void testParseLineDoubleQuote1() throws Exception {
-        line = "\"xxx yyy\"";
-        result = commandParser.parseLine(line);
-        assertEquals("xxx yyy", result.get(0));
+        line = "\"x y\"";
+        result = commandParser.getTokens(line);
+        assertEquals("x y", result.get(0));
 
-        line = "\"xxx \\\"! @\\\" yyy\"";
-        result = commandParser.parseLine(line);
-        assertEquals("xxx \"! @\" yyy", result.get(0));
+        line = " \"x y\"";
+        result = commandParser.getTokens(line);
+        assertEquals("x y", result.get(0));
 
-        line = "xy\\\"zw";
-        result = commandParser.parseLine(line);
-        assertEquals("xy\"zw", result.get(0));
+        line = "\"x y\" ";
+        result = commandParser.getTokens(line);
+        assertEquals("x y", result.get(0));
+
+        line = " \"x y\" ";
+        result = commandParser.getTokens(line);
+        assertEquals("x y", result.get(0));
     }
 
     @Test
     public void testParseLineDoubleQuote2() throws Exception {
+        line = "000 \"xxx yyy\" \" a b \"  zzz";
+        result = commandParser.getTokens(line);
+        assertEquals("000", result.get(0));
+        assertEquals("xxx yyy", result.get(1));
+        assertEquals(" a b ", result.get(2));
+        assertEquals("zzz", result.get(3));
+    }
+
+    @Test
+    public void testParseLineEscapedDoubleQuoted() throws Exception {
+        line = "\"xxx \\\"! @\\\" yyy\"";
+        result = commandParser.getTokens(line);
+        assertEquals("xxx \"! @\" yyy", result.get(0));
+
+        line = "xy\\\"zw";
+        result = commandParser.getTokens(line);
+        assertEquals("xy\"zw", result.get(0));
+
         line = "    cmd --opt \"abc 123\" \"hello \\\"world\\\"!\"    ";
-        result = commandParser.parseLine(line);
+        result = commandParser.getTokens(line);
         assertEquals("cmd", result.get(0));
         assertEquals("--opt", result.get(1));
         assertEquals("abc 123", result.get(2));

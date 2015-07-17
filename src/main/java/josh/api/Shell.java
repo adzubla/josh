@@ -66,7 +66,7 @@ public class Shell {
             }
             if (!line.trim().equals("")) {
                 try {
-                    outcome = commandProvider.execute(commandParser.parseLine(line));
+                    outcome = commandProvider.execute(commandParser.getTokens(line));
                     LOG.debug("outcome = {}", outcome);
                     if (outcome.getExitCode() != 0) {
                         consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
