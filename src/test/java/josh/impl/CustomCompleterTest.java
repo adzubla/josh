@@ -25,7 +25,7 @@ public class CustomCompleterTest {
 
     @Before
     public void before() {
-        candidates = new ArrayList();
+        candidates = new ArrayList<String>();
 
         Map<String, CommandDescriptor> commands = new HashMap<String, CommandDescriptor>();
         customCompleter = new CustomCompleter(new CommandParserImpl(), commands);
