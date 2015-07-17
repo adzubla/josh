@@ -9,6 +9,7 @@ import josh.api.ConsoleProvider;
 import josh.api.Shell;
 import josh.impl.BasicConsoleProvider;
 import josh.impl.CommandParserImpl;
+import josh.impl.CustomCompleter;
 import josh.impl.JLineProvider;
 
 /**
@@ -65,6 +66,7 @@ public class MyShell {
             jline.setInfoColor(Ansi.Color.GREEN);
             jline.setWarnColor(Ansi.Color.YELLOW);
             jline.setErrorColor(Ansi.Color.RED);
+            jline.getConsole().addCompleter(new CustomCompleter(shell.getCommandParser(), commandProvider.getCommands()));
             provider = jline;
             commandProvider.setjLineProvider(jline);
         }
