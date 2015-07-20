@@ -1,7 +1,7 @@
 package josh.example;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,15 @@ public class CommandProviderImpl implements CommandProvider {
         CommandDescriptor echoDescriptor = new CommandDescriptor();
         echoDescriptor.setCommandName("echo");
         echoDescriptor.setCommandDescription("Echo parameters.");
-        echoDescriptor.setOptions(Arrays.asList("--opt1", "--opt2", "--file", "--opt3", "--quiet"));
+        Map<String, Class> options = new HashMap<String, Class>();
+        options.put("--quiet", null);
+        options.put("--opt1", null);
+        options.put("--opt2", null);
+        options.put("--opt3", null);
+        options.put("--debug", YesNo.class);
+        options.put("--file", File.class);
+        options.put("--level", String.class);
+        echoDescriptor.setOptions(options);
 
         CommandDescriptor helpDescriptor = new CommandDescriptor();
         helpDescriptor.setCommandName("help");

@@ -1,12 +1,13 @@
 package josh.api;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 public class CommandDescriptor {
 
     protected String commandName;
     protected String commandDescription;
-    protected Collection<String> options;
+    protected Map<String, Class> options = Collections.emptyMap();
 
     public String getCommandName() {
         return commandName;
@@ -24,11 +25,11 @@ public class CommandDescriptor {
         this.commandDescription = commandDescription;
     }
 
-    public Collection<String> getOptions() {
+    public Map<String, Class> getOptions() {
         return options;
     }
 
-    public void setOptions(Collection<String> options) {
+    public void setOptions(Map<String, Class> options) {
         this.options = options;
     }
 
@@ -39,4 +40,5 @@ public class CommandDescriptor {
                 ", commandDescription='" + commandDescription + '\'' +
                 '}';
     }
+
 }
