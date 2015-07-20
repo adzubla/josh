@@ -1,7 +1,6 @@
 package josh.impl;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,26 +37,25 @@ public class CustomCompleter implements Completer {
             List<Range> ranges = parser.getRanges(buffer);
             LOG.debug("ranges = {}", ranges);
             if (ranges.isEmpty() || cursor <= ranges.get(0).end) {
-                int complete = commandNameCompleter.complete(buffer, cursor, candidates);
-                LOG.debug("candidates = {}", candidates);
-                LOG.debug("complete = {}", complete);
-                return complete;
+                return commandNameCompleter.complete(buffer, cursor, candidates);
             }
             else {
-                Range range = ranges.get(0);
-                String commandName = buffer.substring(range.start, range.end);
+                Range firstRange = ranges.get(0);
+                String commandName = buffer.substring(firstRange.start, firstRange.end);
                 CommandDescriptor descriptor = commands.get(commandName);
+
                 if (descriptor != null) {
                     Collection<String> options = descriptor.getOptions();
                     if (options != null) {
-                        LinkedList<String> args = new LinkedList<String>();
-                        args.add(commandName);
-                        args.addAll(options);
-                        Completer completer = new ArgumentCompleter(new StringsCompleter(args));
-                        int complete = completer.complete(buffer, cursor, candidates);
+                        Range cursorRange = findRange(cursor, ranges);
+                        String sub = buffer.substring(cursorRange.start, Math.min(cursor, cursorRange.end));
+                        LOG.debug("sub = [{}]", sub);
+                        Completer completer = new ArgumentCompleter(new StringsCompleter(options));
+                        int complete = completer.complete(sub, 0, candidates);
                         LOG.debug("candidates = {}", candidates);
                         LOG.debug("complete = {}", complete);
-                        return complete;
+                        LOG.debug("complete+start = {}", cursorRange.start + complete);
+                        return cursorRange.start + complete;
                     }
                 }
                 return -1;
@@ -68,6 +66,15 @@ public class CustomCompleter implements Completer {
             e.printStackTrace();
         }
         return cursor;
+    }
+
+    protected Range findRange(int cursor, List<Range> ranges) {
+        for (Range range : ranges) {
+            if (range.start < cursor && cursor <= range.end) {
+                return range;
+            }
+        }
+        return new Range(cursor, cursor);
     }
 
 }
