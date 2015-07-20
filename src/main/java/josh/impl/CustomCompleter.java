@@ -49,57 +49,54 @@ public class CustomCompleter implements Completer {
 
                 if (descriptor != null) {
                     Map<String, Class> options = descriptor.getOptions();
-                    LOG.debug("options = {}", options);
                     if (options != null && !options.isEmpty()) {
 
-                        Range cursorToken = null;
-                        int cursorIndex;
+                        Range rangeUnderCursor = null;
+                        int rangeIndexUnderCursor;
 
-                        for (cursorIndex = 0; cursorIndex < ranges.size(); cursorIndex++) {
-                            Range r = ranges.get(cursorIndex);
+                        for (rangeIndexUnderCursor = 0; rangeIndexUnderCursor < ranges.size(); rangeIndexUnderCursor++) {
+                            Range r = ranges.get(rangeIndexUnderCursor);
                             if (r.start < cursor && cursor <= r.end) {
-                                cursorToken = r;
+                                rangeUnderCursor = r;
                                 break;
                             }
                         }
-                        if (cursorToken == null) {
-                            cursorToken = new Range(cursor, cursor);
+                        if (rangeUnderCursor == null) {
+                            rangeUnderCursor = new Range(cursor, cursor);
                         }
-                        LOG.debug("cursorToken = {}", cursorToken);
+                        LOG.debug("rangeUnderCursor = {} index = {}", rangeUnderCursor, rangeIndexUnderCursor);
 
-                        Class type = null;
-                        if (cursorIndex > 1) {
-                            Range prevToken = ranges.get(cursorIndex - 1);
-                            String tokenValue = buffer.substring(prevToken.start, prevToken.end);
-                            LOG.debug("tokenValue = {}", tokenValue);
-                            type = options.get(tokenValue);
-                            LOG.debug("type = {}", type);
+                        Class classUnderCursor = null;
+                        if (rangeIndexUnderCursor > 1) {
+                            Range prevRange = ranges.get(rangeIndexUnderCursor - 1);
+                            String prevToken = buffer.substring(prevRange.start, prevRange.end);
+                            LOG.debug("prevToken = {}", prevToken);
+                            classUnderCursor = options.get(prevToken);
+                            LOG.debug("classUnderCursor = {}", classUnderCursor);
                         }
 
-                        String sub = buffer.substring(cursorToken.start, Math.min(cursor, cursorToken.end));
-                        LOG.debug("sub = [{}]", sub);
+                        String tokenUnderCursor = buffer.substring(rangeUnderCursor.start, Math.min(cursor, rangeUnderCursor.end));
+                        LOG.debug("tokenUnderCursor = [{}]", tokenUnderCursor);
 
-                        Completer completer = getCompleter(options, type);
-                        int complete = completer.complete(sub, 0, candidates);
+                        Completer completer = getCompleter(options, classUnderCursor);
+                        int complete = completer.complete(tokenUnderCursor, 0, candidates);
                         LOG.debug("candidates = {}", candidates);
                         LOG.debug("complete = {}", complete);
-                        LOG.debug("complete+start = {}", cursorToken.start + complete);
-                        return cursorToken.start + complete;
+                        LOG.debug("start+complete = {}", rangeUnderCursor.start + complete);
+                        return rangeUnderCursor.start + complete;
                     }
                 }
                 return -1;
             }
         }
         catch (Exception e) {
-            LOG.debug("Ignoring exception: " + e);
-            e.printStackTrace();
+            LOG.debug("Ignoring exception...", e);
         }
         return cursor;
     }
 
     private Completer getCompleter(Map<String, Class> options, Class type) {
-        Completer completer = null;
-
+        Completer completer;
         if (type == null) {
             completer = new ArgumentCompleter(new StringsCompleter(options.keySet()));
         }
@@ -111,19 +108,8 @@ public class CustomCompleter implements Completer {
         }
         else {
             completer = new NullCompleter();
-            LOG.debug("No completer found for type {}", type);
         }
         return completer;
-    }
-
-    protected Range findRange(int cursor, List<Range> ranges) {
-        for (int i = 0; i < ranges.size(); i++) {
-            Range range = ranges.get(i);
-            if (range.start < cursor && cursor <= range.end) {
-                return range;
-            }
-        }
-        return new Range(cursor, cursor);
     }
 
 }

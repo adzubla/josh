@@ -45,9 +45,9 @@ public class CommandProviderImpl implements CommandProvider {
         helpDescriptor.setCommandName("help");
         helpDescriptor.setCommandDescription("Display commands.");
 
-        CommandDescriptor clsDescriptor = new CommandDescriptor();
-        clsDescriptor.setCommandName("cls");
-        clsDescriptor.setCommandDescription("Clear screen.");
+        CommandDescriptor clearDescriptor = new CommandDescriptor();
+        clearDescriptor.setCommandName("clear");
+        clearDescriptor.setCommandDescription("Clear screen.");
 
         CommandDescriptor exitDescriptor = new CommandDescriptor();
         exitDescriptor.setCommandName("exit");
@@ -57,7 +57,7 @@ public class CommandProviderImpl implements CommandProvider {
         commands.put(dateDescriptor.getCommandName(), dateDescriptor);
         commands.put(echoDescriptor.getCommandName(), echoDescriptor);
         commands.put(helpDescriptor.getCommandName(), helpDescriptor);
-        commands.put(clsDescriptor.getCommandName(), clsDescriptor);
+        commands.put(clearDescriptor.getCommandName(), clearDescriptor);
         commands.put(exitDescriptor.getCommandName(), exitDescriptor);
 
         LOG.debug("commands = {}", commands);
@@ -103,12 +103,12 @@ public class CommandProviderImpl implements CommandProvider {
             commandOutcome.setExitCode(helpCommand.run(arguments));
         }
         // "built-in" commands
-        else if ("cls".equals(commandDescriptor.getCommandName())) {
+        else if ("clear".equals(commandDescriptor.getCommandName())) {
             try {
                 jLineProvider.getConsole().clearScreen();
             }
             catch (IOException e) {
-                LOG.error("cls errror", e);
+                LOG.error("clear errror", e);
             }
         }
         else if ("exit".equals(commandDescriptor.getCommandName())) {
