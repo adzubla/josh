@@ -1,6 +1,7 @@
 package josh.api;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Carrega os comandos disponíveis
@@ -12,8 +13,12 @@ import java.util.List;
  */
 public interface CommandProvider {
 
-    HelpFormatter getHelpFormatter();
+    boolean isValidCommand(String commandName);
+
+    HelpFormatter getHelpFormatter(String commandName);
 
     CommandOutcome execute(List<String> args) throws CommandNotFound;
+
+    Map<String, CommandDescriptor> getCommands();
 
 }

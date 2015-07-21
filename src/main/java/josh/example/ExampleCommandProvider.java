@@ -16,14 +16,14 @@ import josh.api.CommandProvider;
 import josh.api.HelpFormatter;
 import josh.impl.JLineProvider;
 
-public class CommandProviderImpl implements CommandProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(CommandProviderImpl.class);
+public class ExampleCommandProvider implements CommandProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(ExampleCommandProvider.class);
 
     protected Map<String, CommandDescriptor> commands;
 
     protected JLineProvider jLineProvider;
 
-    public CommandProviderImpl() {
+    public ExampleCommandProvider() {
         CommandDescriptor dateDescriptor = new CommandDescriptor();
         dateDescriptor.setCommandName("date");
         dateDescriptor.setCommandDescription("Display current date.");
@@ -68,7 +68,12 @@ public class CommandProviderImpl implements CommandProvider {
     }
 
     @Override
-    public HelpFormatter getHelpFormatter() {
+    public boolean isValidCommand(String commandName) {
+        return commands.containsKey(commandName);
+    }
+
+    @Override
+    public HelpFormatter getHelpFormatter(String commandName) {
         return null;
     }
 

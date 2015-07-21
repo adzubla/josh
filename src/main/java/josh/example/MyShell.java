@@ -5,23 +5,20 @@ import java.util.Arrays;
 import org.fusesource.jansi.Ansi;
 
 import josh.api.CommandNotFound;
+import josh.api.CommandProvider;
 import josh.api.ConsoleProvider;
 import josh.api.Shell;
 import josh.impl.BasicConsoleProvider;
 import josh.impl.CommandParserImpl;
+import josh.impl.CompoundCommandProvider;
 import josh.impl.CustomCompleter;
 import josh.impl.JLineProvider;
 
 /**
- * Integra todos os componentes com implementação default
- * - le opções da linha de comando
- * - configura shell
- * - invoca shell
+ * Integra todos os componentes com implementação default - le opções da linha de comando - configura shell - invoca
+ * shell
  * <p/>
- * josh -c 'cmd arg1 arg2'
- * josh -f cmdlist.txt
- * josh -v key=value
- * josh
+ * josh -c 'cmd arg1 arg2' josh -f cmdlist.txt josh -v key=value josh
  */
 public class MyShell {
 
@@ -29,7 +26,8 @@ public class MyShell {
 
     public static void main(String[] args) {
 
-        CommandProviderImpl commandProvider = new CommandProviderImpl();
+        CommandProvider commandProvider =
+                new CompoundCommandProvider(new BuiltInCommandProvider(), new ExampleCommandProvider());
 
         int exitCode;
         if (args.length == 0) {
@@ -41,7 +39,7 @@ public class MyShell {
         System.exit(exitCode);
     }
 
-    private static int runSingleCommand(CommandProviderImpl commandProvider, String[] args) {
+    private static int runSingleCommand(CommandProvider commandProvider, String[] args) {
         try {
             return commandProvider.execute(Arrays.asList(args)).getExitCode();
         }
@@ -50,7 +48,7 @@ public class MyShell {
         }
     }
 
-    private static int runInteractiveShell(CommandProviderImpl commandProvider) {
+    private static int runInteractiveShell(CommandProvider commandProvider) {
         Shell shell = new Shell();
         shell.setDisplayStackTraceOnError(true);
         shell.setExitOnError(false);
@@ -66,9 +64,12 @@ public class MyShell {
             jline.setInfoColor(Ansi.Color.GREEN);
             jline.setWarnColor(Ansi.Color.YELLOW);
             jline.setErrorColor(Ansi.Color.RED);
-            jline.getConsole().addCompleter(new CustomCompleter(shell.getCommandParser(), commandProvider.getCommands()));
+            jline.getConsole()
+                    .addCompleter(new CustomCompleter(shell.getCommandParser(), commandProvider.getCommands()));
             provider = jline;
-            commandProvider.setjLineProvider(jline);
+            if (commandProvider instanceof ExampleCommandProvider) {
+                ((ExampleCommandProvider)commandProvider).setjLineProvider(jline);
+            }
         }
         else {
             provider = new BasicConsoleProvider();
