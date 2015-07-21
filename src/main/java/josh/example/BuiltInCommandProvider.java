@@ -52,6 +52,16 @@ public class BuiltInCommandProvider implements CommandProvider {
     }
 
     @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
     public boolean isValidCommand(String commandName) {
         return commands.containsKey(commandName);
     }

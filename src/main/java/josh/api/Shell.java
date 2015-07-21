@@ -35,6 +35,7 @@ public class Shell {
         LOG.info("Starting shell");
 
         consoleProvider.initialize();
+        commandProvider.initialize();
 
         if (initializer != null) {
             initializer.initialize(this);
@@ -46,6 +47,7 @@ public class Shell {
             finalizer.destroy(this);
         }
 
+        commandProvider.destroy();
         consoleProvider.destroy();
 
         LOG.info("Ending shell");

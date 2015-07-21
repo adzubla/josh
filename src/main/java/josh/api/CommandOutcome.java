@@ -5,6 +5,13 @@ public class CommandOutcome {
     protected int exitCode;
     protected boolean exitRequest;
 
+    public CommandOutcome() {
+    }
+
+    public CommandOutcome(int exitCode) {
+        setExitCode(exitCode);
+    }
+
     public int getExitCode() {
         return exitCode;
     }

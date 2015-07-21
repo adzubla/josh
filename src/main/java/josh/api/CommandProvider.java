@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public interface CommandProvider {
 
+    void initialize();
+
+    void destroy();
+
     boolean isValidCommand(String commandName);
 
     HelpFormatter getHelpFormatter(String commandName);

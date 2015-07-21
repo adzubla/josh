@@ -35,6 +35,20 @@ public class CompoundCommandProvider implements CommandProvider {
     }
 
     @Override
+    public void initialize() {
+        for (CommandProvider provider : getProviders()) {
+            provider.initialize();
+        }
+    }
+
+    @Override
+    public void destroy() {
+        for (CommandProvider provider : providers) {
+            provider.destroy();
+        }
+    }
+
+    @Override
     public boolean isValidCommand(String commandName) {
         for (CommandProvider provider : getProviders()) {
             if (provider.isValidCommand(commandName)) {
