@@ -8,6 +8,5 @@ import josh.api.CommandProvider;
 public class CompoundCommandProvider {
     void CompoundCommandProvider(CommandProvider... providers) {
 
-        System.out.println(providers);
     }
 }
