@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import josh.command.Command;
 import josh.command.CommandDescriptor;
 import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
+import josh.command.jcommander.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -12,7 +12,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.Parameterized;
 
-import josh.command.Command;
 import josh.command.CommandDescriptor;
 import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
