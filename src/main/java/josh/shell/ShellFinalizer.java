@@ -1,4 +1,4 @@
-package josh.api;
+package josh.shell;
 
 public interface ShellFinalizer {
 

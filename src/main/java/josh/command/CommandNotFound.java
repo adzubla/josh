@@ -1,4 +1,4 @@
-package josh.api;
+package josh.command;
 
 public class CommandNotFound extends Throwable {
 

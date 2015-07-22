@@ -1,4 +1,4 @@
-package josh.api;
+package josh.command;
 
 /**
  * Faz a formatação do help de um comando

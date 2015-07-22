@@ -1,8 +1,8 @@
-package josh.impl;
+package josh.shell;
 
 public class Range {
-    int start;
-    int end;
+    public int start;
+    public int end;
 
     public Range(int tokenStart, int tokenEnd) {
         this.start = tokenStart;

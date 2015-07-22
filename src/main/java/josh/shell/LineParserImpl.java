@@ -1,11 +1,9 @@
-package josh.impl;
+package josh.shell;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import josh.api.CommandParser;
-
-public class CommandParserImpl implements CommandParser {
+public class LineParserImpl implements LineParser {
 
     public static final char SPACE_CHAR = ' ';
     public static final char TAB_CHAR = '\t';

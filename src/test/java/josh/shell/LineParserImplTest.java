@@ -1,23 +1,21 @@
-package josh;
+package josh.shell;
 
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import josh.impl.CommandParserImpl;
-
 import static org.junit.Assert.assertEquals;
 
-public class CommandParserImplTest {
+public class LineParserImplTest {
 
-    CommandParserImpl commandParser = new CommandParserImpl();
+    LineParserImpl commandParser = new LineParserImpl();
     String line;
     List<String> result;
 
     @Before
     public void before() {
-        commandParser = new CommandParserImpl();
+        commandParser = new LineParserImpl();
     }
 
     @Test

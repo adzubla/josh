@@ -1,4 +1,4 @@
-package josh.example;
+package josh.command.jcommander;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,12 +12,12 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.Parameterized;
 
-import josh.api.Command;
-import josh.api.CommandDescriptor;
-import josh.api.CommandNotFound;
-import josh.api.CommandOutcome;
-import josh.api.CommandProvider;
-import josh.api.HelpFormatter;
+import josh.command.Command;
+import josh.command.CommandDescriptor;
+import josh.command.CommandNotFound;
+import josh.command.CommandOutcome;
+import josh.command.CommandProvider;
+import josh.command.HelpFormatter;
 
 public abstract class AbstractJCommanderProvider implements CommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractJCommanderProvider.class);

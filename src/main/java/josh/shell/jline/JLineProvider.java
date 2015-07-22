@@ -1,4 +1,4 @@
-package josh.impl;
+package josh.shell.jline;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
 import jline.console.history.FileHistory;
-import josh.api.ConsoleProvider;
+import josh.shell.ConsoleProvider;
 
 import static org.fusesource.jansi.Ansi.Color.DEFAULT;
 import static org.fusesource.jansi.Ansi.ansi;

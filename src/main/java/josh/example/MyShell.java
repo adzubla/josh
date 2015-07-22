@@ -4,15 +4,16 @@ import java.util.Arrays;
 
 import org.fusesource.jansi.Ansi;
 
-import josh.api.CommandNotFound;
-import josh.api.CommandProvider;
-import josh.api.ConsoleProvider;
-import josh.api.Shell;
-import josh.impl.BasicConsoleProvider;
-import josh.impl.CommandParserImpl;
-import josh.impl.CompoundCommandProvider;
-import josh.impl.CustomCompleter;
-import josh.impl.JLineProvider;
+import josh.command.BuiltInCommandProvider;
+import josh.command.CommandNotFound;
+import josh.command.CommandProvider;
+import josh.command.CompoundCommandProvider;
+import josh.shell.BasicConsoleProvider;
+import josh.shell.ConsoleProvider;
+import josh.shell.LineParserImpl;
+import josh.shell.Shell;
+import josh.shell.jline.CustomCompleter;
+import josh.shell.jline.JLineProvider;
 
 /**
  * Integra todos os componentes com implementação default - le opções da linha de comando - configura shell - invoca
@@ -52,7 +53,7 @@ public class MyShell {
         Shell shell = new Shell();
         shell.setDisplayStackTraceOnError(true);
         shell.setExitOnError(false);
-        shell.setCommandParser(new CommandParserImpl());
+        shell.setLineParser(new LineParserImpl());
         shell.setInitializer(new MyShellInitializer());
         shell.setFinalizer(new MyShellFinalizer());
 
@@ -65,7 +66,7 @@ public class MyShell {
             jline.setWarnColor(Ansi.Color.YELLOW);
             jline.setErrorColor(Ansi.Color.RED);
             jline.getConsole()
-                    .addCompleter(new CustomCompleter(shell.getCommandParser(), commandProvider.getCommands()));
+                    .addCompleter(new CustomCompleter(shell.getLineParser(), commandProvider.getCommands()));
             provider = jline;
             if (commandProvider instanceof ExampleCommandProvider) {
                 ((ExampleCommandProvider)commandProvider).setjLineProvider(jline);

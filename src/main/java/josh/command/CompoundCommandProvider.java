@@ -1,4 +1,4 @@
-package josh.impl;
+package josh.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,12 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import josh.api.CommandDescriptor;
-import josh.api.CommandNotFound;
-import josh.api.CommandOutcome;
-import josh.api.CommandProvider;
-import josh.api.HelpFormatter;
 
 /**
  * Permite juntar comandos de várias fontes

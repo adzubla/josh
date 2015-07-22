@@ -1,4 +1,4 @@
-package josh.api;
+package josh.command;
 
 import java.util.List;
 import java.util.Map;

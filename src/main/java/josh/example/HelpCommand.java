@@ -3,7 +3,7 @@ package josh.example;
 import java.util.List;
 import java.util.Map;
 
-import josh.api.CommandDescriptor;
+import josh.command.CommandDescriptor;
 
 public class HelpCommand {
 

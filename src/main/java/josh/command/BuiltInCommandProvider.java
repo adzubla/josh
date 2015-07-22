@@ -1,4 +1,4 @@
-package josh.example;
+package josh.command;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import josh.api.CommandDescriptor;
-import josh.api.CommandNotFound;
-import josh.api.CommandOutcome;
-import josh.api.CommandProvider;
-import josh.api.HelpFormatter;
+import josh.example.DateCommand;
+import josh.example.EchoCommand;
+import josh.example.HelpCommand;
 
 public class BuiltInCommandProvider implements CommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(BuiltInCommandProvider.class);

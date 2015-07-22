@@ -4,7 +4,8 @@ import java.util.Collection;
 
 import org.springframework.context.ApplicationContext;
 
-import josh.api.Command;
+import josh.command.Command;
+import josh.command.jcommander.AbstractJCommanderProvider;
 
 public class SpringCommandProvider extends AbstractJCommanderProvider {
     protected ApplicationContext ctx;

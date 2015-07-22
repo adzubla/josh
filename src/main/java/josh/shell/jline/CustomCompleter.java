@@ -1,4 +1,4 @@
-package josh.impl;
+package josh.shell.jline;
 
 import java.io.File;
 import java.util.List;
@@ -13,17 +13,18 @@ import jline.console.completer.EnumCompleter;
 import jline.console.completer.FileNameCompleter;
 import jline.console.completer.NullCompleter;
 import jline.console.completer.StringsCompleter;
-import josh.api.CommandDescriptor;
-import josh.api.CommandParser;
+import josh.command.CommandDescriptor;
+import josh.shell.LineParser;
+import josh.shell.Range;
 
 public class CustomCompleter implements Completer {
     private static final Logger LOG = LoggerFactory.getLogger(CustomCompleter.class);
 
-    protected CommandParser parser;
+    protected LineParser parser;
     protected Map<String, CommandDescriptor> commands;
     protected StringsCompleter commandNameCompleter;
 
-    public CustomCompleter(CommandParser parser, Map<String, CommandDescriptor> commands) {
+    public CustomCompleter(LineParser parser, Map<String, CommandDescriptor> commands) {
         this.parser = parser;
         this.commands = commands;
         commandNameCompleter = new StringsCompleter(commands.keySet());

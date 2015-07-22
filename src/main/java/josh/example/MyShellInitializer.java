@@ -1,8 +1,8 @@
 package josh.example;
 
-import josh.api.ConsoleProvider;
-import josh.api.Shell;
-import josh.api.ShellInitializer;
+import josh.shell.ConsoleProvider;
+import josh.shell.Shell;
+import josh.shell.ShellInitializer;
 
 public class MyShellInitializer implements ShellInitializer {
 

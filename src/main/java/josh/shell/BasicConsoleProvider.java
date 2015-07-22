@@ -1,10 +1,8 @@
-package josh.impl;
+package josh.shell;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import josh.api.ConsoleProvider;
 
 public class BasicConsoleProvider implements ConsoleProvider {
 

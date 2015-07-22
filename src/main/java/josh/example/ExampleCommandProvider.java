@@ -9,12 +9,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import josh.api.CommandDescriptor;
-import josh.api.CommandNotFound;
-import josh.api.CommandOutcome;
-import josh.api.CommandProvider;
-import josh.api.HelpFormatter;
-import josh.impl.JLineProvider;
+import josh.command.CommandDescriptor;
+import josh.command.CommandNotFound;
+import josh.command.CommandOutcome;
+import josh.command.CommandProvider;
+import josh.command.HelpFormatter;
+import josh.shell.jline.JLineProvider;
 
 public class ExampleCommandProvider implements CommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(ExampleCommandProvider.class);

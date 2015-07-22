@@ -1,4 +1,4 @@
-package josh.api;
+package josh.shell;
 
 /**
  * Realiza as operações de input/output (classes separadas?)

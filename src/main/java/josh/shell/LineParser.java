@@ -1,13 +1,11 @@
-package josh.api;
+package josh.shell;
 
 import java.util.List;
-
-import josh.impl.Range;
 
 /**
  * Faz o parse de uma linha de comando
  */
-public interface CommandParser {
+public interface LineParser {
 
     List<String> getTokens(CharSequence line);
 

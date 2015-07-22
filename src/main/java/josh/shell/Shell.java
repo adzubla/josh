@@ -1,10 +1,14 @@
-package josh.api;
+package josh.shell;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import josh.command.CommandNotFound;
+import josh.command.CommandOutcome;
+import josh.command.CommandProvider;
 
 /**
  * Controla os componentes configurados
@@ -25,7 +29,7 @@ public class Shell {
     protected boolean exitOnError;
 
     protected CommandProvider commandProvider;
-    protected CommandParser commandParser;
+    protected LineParser lineParser;
     protected ConsoleProvider consoleProvider;
 
     protected ShellInitializer initializer;
@@ -68,7 +72,7 @@ public class Shell {
             }
             if (!line.trim().equals("")) {
                 try {
-                    outcome = commandProvider.execute(commandParser.getTokens(line));
+                    outcome = commandProvider.execute(lineParser.getTokens(line));
                     LOG.debug("outcome = {}", outcome);
                     if (outcome.getExitCode() != 0) {
                         consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
@@ -128,12 +132,12 @@ public class Shell {
         this.commandProvider = commandProvider;
     }
 
-    public CommandParser getCommandParser() {
-        return commandParser;
+    public LineParser getLineParser() {
+        return lineParser;
     }
 
-    public void setCommandParser(CommandParser commandParser) {
-        this.commandParser = commandParser;
+    public void setLineParser(LineParser lineParser) {
+        this.lineParser = lineParser;
     }
 
     public ConsoleProvider getConsoleProvider() {
