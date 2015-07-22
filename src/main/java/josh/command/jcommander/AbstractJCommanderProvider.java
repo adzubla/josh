@@ -25,14 +25,14 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
 
     protected Map<String, CommandDescriptor> commandDescriptors;
 
-    protected abstract Collection<Command> findCommands();
+    protected abstract Collection<Executable> findCommands();
 
     @Override
     public void initialize() {
         commands = new JCommander();
 
-        for (Command command : findCommands()) {
-            commands.addCommand(command);
+        for (Executable executable : findCommands()) {
+            commands.addCommand(executable);
         }
 
         commandDescriptors = new HashMap<String, CommandDescriptor>();
@@ -103,8 +103,8 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
 
         jCommander.parse(arguments.toArray(new String[arguments.size()]));
 
-        Command command = (Command)jCommander.getObjects().get(0);
-        return command.execute();
+        Executable executable = (Executable)jCommander.getObjects().get(0);
+        return executable.execute();
     }
 
     @Override

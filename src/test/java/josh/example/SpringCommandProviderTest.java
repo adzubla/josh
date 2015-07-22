@@ -16,7 +16,7 @@ import com.beust.jcommander.Parameters;
 import josh.command.CommandDescriptor;
 import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
-import josh.command.jcommander.Command;
+import josh.command.jcommander.Executable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -80,7 +80,7 @@ public class SpringCommandProviderTest {
 
     @Component
     @Parameters(commandNames = "command-test", commandDescription = "Description Test 123")
-    public static class CommandTest implements Command {
+    public static class CommandTest implements Executable {
 
         private boolean commandExecuted = false;
 

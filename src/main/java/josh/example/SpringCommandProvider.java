@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.context.ApplicationContext;
 
 import josh.command.jcommander.AbstractJCommanderProvider;
-import josh.command.jcommander.Command;
+import josh.command.jcommander.Executable;
 
 public class SpringCommandProvider extends AbstractJCommanderProvider {
     protected ApplicationContext ctx;
@@ -15,8 +15,8 @@ public class SpringCommandProvider extends AbstractJCommanderProvider {
     }
 
     @Override
-    protected Collection<Command> findCommands() {
-        return ctx.getBeansOfType(Command.class).values();
+    protected Collection<Executable> findCommands() {
+        return ctx.getBeansOfType(Executable.class).values();
     }
 
 }

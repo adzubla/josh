@@ -2,7 +2,7 @@ package josh.command.jcommander;
 
 import josh.command.CommandOutcome;
 
-public interface Command {
+public interface Executable {
 
     CommandOutcome execute();
 
