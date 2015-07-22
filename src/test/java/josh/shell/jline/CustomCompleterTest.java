@@ -22,14 +22,14 @@ public class CustomCompleterTest {
     List<String> candidates;
     String line;
 
-    CustomCompleter customCompleter;
+    CommandCompleter customCompleter;
 
     @Before
     public void before() {
         candidates = new ArrayList<String>();
 
         Map<String, CommandDescriptor> commands = new HashMap<String, CommandDescriptor>();
-        customCompleter = new CustomCompleter(new LineParserImpl(), commands);
+        customCompleter = new CommandCompleter(new LineParserImpl(), commands);
     }
 
     private void print(int index, List<String> candidates) {

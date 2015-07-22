@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
+import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import josh.shell.ConsoleProvider;
 
@@ -131,6 +132,10 @@ public class JLineProvider implements ConsoleProvider {
             LOG.error(msg);
             println(msg);
         }
+    }
+
+    public boolean addCompleter(Completer completer) {
+        return console.addCompleter(completer);
     }
 
     public ConsoleReader getConsole() {

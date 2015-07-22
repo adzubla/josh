@@ -12,7 +12,7 @@ import josh.shell.BasicConsoleProvider;
 import josh.shell.ConsoleProvider;
 import josh.shell.LineParserImpl;
 import josh.shell.Shell;
-import josh.shell.jline.CustomCompleter;
+import josh.shell.jline.CommandCompleter;
 import josh.shell.jline.JLineProvider;
 
 /**
@@ -65,9 +65,10 @@ public class MyShell {
             jline.setInfoColor(Ansi.Color.GREEN);
             jline.setWarnColor(Ansi.Color.YELLOW);
             jline.setErrorColor(Ansi.Color.RED);
-            jline.getConsole()
-                    .addCompleter(new CustomCompleter(shell.getLineParser(), commandProvider.getCommands()));
+            jline.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider.getCommands()));
             provider = jline;
+
+            // TODO: comando "clear" nao funciona...
             if (commandProvider instanceof ExampleCommandProvider) {
                 ((ExampleCommandProvider)commandProvider).setjLineProvider(jline);
             }

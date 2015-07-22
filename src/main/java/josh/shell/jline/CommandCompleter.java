@@ -17,26 +17,32 @@ import josh.command.CommandDescriptor;
 import josh.shell.LineParser;
 import josh.shell.Range;
 
-public class CustomCompleter implements Completer {
-    private static final Logger LOG = LoggerFactory.getLogger(CustomCompleter.class);
+public class CommandCompleter implements Completer {
+    private static final Logger LOG = LoggerFactory.getLogger(CommandCompleter.class);
 
     protected LineParser parser;
     protected Map<String, CommandDescriptor> commands;
     protected StringsCompleter commandNameCompleter;
 
-    public CustomCompleter(LineParser parser, Map<String, CommandDescriptor> commands) {
+    public CommandCompleter(LineParser parser, Map<String, CommandDescriptor> commands) {
         this.parser = parser;
         this.commands = commands;
         commandNameCompleter = new StringsCompleter(commands.keySet());
     }
 
-    public int complete(final String buffer, final int cursor, final List candidates) {
+    public int complete(String buffer, int cursor, List candidates) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("---------------------------------------------------------------");
             LOG.debug("buffer = [{}]", buffer);
             String padding = "                                                                                           ".substring(0, cursor + 1);
             LOG.debug("cursor = {}^ {}", padding, cursor);
         }
+
+        while (buffer.startsWith(" ")) {
+            buffer = buffer.replaceFirst("^ ", "");
+            cursor--;
+        }
+
         try {
             List<Range> ranges = parser.getRanges(buffer);
             LOG.debug("ranges = {}", ranges);
