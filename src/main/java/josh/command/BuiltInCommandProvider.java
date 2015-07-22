@@ -1,5 +1,6 @@
 package josh.command;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,46 +9,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import josh.example.DateCommand;
-import josh.example.EchoCommand;
 import josh.example.HelpCommand;
+import josh.shell.Shell;
+import josh.shell.ShellAware;
+import josh.shell.jline.JLineProvider;
 
-public class BuiltInCommandProvider implements CommandProvider {
+public class BuiltInCommandProvider implements CommandProvider, ShellAware {
     private static final Logger LOG = LoggerFactory.getLogger(BuiltInCommandProvider.class);
 
     protected Map<String, CommandDescriptor> commands;
 
+    protected Shell shell;
+
     public BuiltInCommandProvider() {
         CommandDescriptor dateDescriptor = new CommandDescriptor();
-        dateDescriptor.setCommandName("date2");
+        dateDescriptor.setCommandName("date");
         dateDescriptor.setCommandDescription("Display current date.");
 
-        CommandDescriptor echoDescriptor = new CommandDescriptor();
-        echoDescriptor.setCommandName("echo2");
-        echoDescriptor.setCommandDescription("Echo parameters.");
-        Map<String, Class> options = new HashMap<String, Class>();
-        options.put("--quiet", null);
-        options.put("--opt1", null);
-        options.put("--opt2", null);
-        options.put("--opt3", null);
-        options.put("--level", String.class);
-        echoDescriptor.setOptions(options);
-
         CommandDescriptor helpDescriptor = new CommandDescriptor();
-        helpDescriptor.setCommandName("help2");
+        helpDescriptor.setCommandName("help");
         helpDescriptor.setCommandDescription("Display commands.");
 
+        CommandDescriptor clearDescriptor = new CommandDescriptor();
+        clearDescriptor.setCommandName("clear");
+        clearDescriptor.setCommandDescription("Clear screen.");
+
         CommandDescriptor exitDescriptor = new CommandDescriptor();
-        exitDescriptor.setCommandName("exit2");
+        exitDescriptor.setCommandName("exit");
         exitDescriptor.setCommandDescription("Exit shell.");
 
         commands = new HashMap<String, CommandDescriptor>();
         commands.put(dateDescriptor.getCommandName(), dateDescriptor);
-        commands.put(echoDescriptor.getCommandName(), echoDescriptor);
         commands.put(helpDescriptor.getCommandName(), helpDescriptor);
+        commands.put(clearDescriptor.getCommandName(), clearDescriptor);
         commands.put(exitDescriptor.getCommandName(), exitDescriptor);
 
-        LOG.debug("commands = {}", commands);
-    }
+        LOG.debug("commands = {}", commands);    }
 
     @Override
     public void initialize() {
@@ -91,22 +88,31 @@ public class BuiltInCommandProvider implements CommandProvider {
         LOG.debug("invokeCommand {}, {}", commandDescriptor.getCommandName(), arguments);
 
         CommandOutcome commandOutcome = new CommandOutcome();
-        if ("date2".equals(commandDescriptor.getCommandName())) {
+        if ("date".equals(commandDescriptor.getCommandName())) {
             DateCommand dateCommand = new DateCommand();
             commandOutcome.setExitCode(dateCommand.run(arguments));
         }
-        else if ("echo2".equals(commandDescriptor.getCommandName())) {
-            EchoCommand echoCommand = new EchoCommand();
-            commandOutcome.setExitCode(echoCommand.run(arguments));
-        }
-        else if ("help2".equals(commandDescriptor.getCommandName())) {
-            HelpCommand helpCommand = new HelpCommand(commands);
+        else if ("help".equals(commandDescriptor.getCommandName())) {
+            HelpCommand helpCommand = new HelpCommand(shell.getCommandProvider().getCommands());
             commandOutcome.setExitCode(helpCommand.run(arguments));
         }
-        else if ("exit2".equals(commandDescriptor.getCommandName())) {
+        else if ("clear".equals(commandDescriptor.getCommandName())) {
+            try {
+                JLineProvider jLineProvider = (JLineProvider) shell.getConsoleProvider();
+                jLineProvider.getConsole().clearScreen();
+            }
+            catch (IOException e) {
+                LOG.error("clear errror", e);
+            }
+        }
+        else if ("exit".equals(commandDescriptor.getCommandName())) {
             commandOutcome.setExitRequest();
         }
         return commandOutcome;
     }
 
+    @Override
+    public void setShell(Shell shell) {
+        this.shell = shell;
+    }
 }

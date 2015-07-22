@@ -7,10 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import josh.shell.Shell;
+import josh.shell.ShellAware;
+
 /**
  * Permite juntar comandos de várias fontes
  */
-public class CompoundCommandProvider implements CommandProvider {
+public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     private List<CommandProvider> providers = new ArrayList<CommandProvider>();
 
@@ -20,6 +23,10 @@ public class CompoundCommandProvider implements CommandProvider {
 
     public void addCommandProvider(CommandProvider provider) {
         this.providers.add(provider);
+    }
+
+    public static void main(String[] args) {
+        List<String> listTest = new ArrayList<String>();
     }
 
     protected List<CommandProvider> getProviders() {
@@ -80,5 +87,14 @@ public class CompoundCommandProvider implements CommandProvider {
             commands.putAll(provider.getCommands());
         }
         return commands;
+    }
+
+    @Override
+    public void setShell(Shell shell) {
+        for (CommandProvider provider : getProviders()) {
+            if (provider instanceof ShellAware) {
+                ((ShellAware)provider).setShell(shell);
+            }
+        }
     }
 }

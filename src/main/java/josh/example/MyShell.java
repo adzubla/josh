@@ -61,11 +61,6 @@ public class MyShell {
         provider.setErrorColor(Ansi.Color.RED);
         provider.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider.getCommands()));
 
-        // TODO: comando "clear" nao funciona...
-        if (commandProvider instanceof ExampleCommandProvider) {
-            ((ExampleCommandProvider)commandProvider).setjLineProvider(provider);
-        }
-
         provider.setPrompt("> ");
         shell.setConsoleProvider(provider);
 

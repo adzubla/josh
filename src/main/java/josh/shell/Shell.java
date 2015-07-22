@@ -130,6 +130,10 @@ public class Shell {
 
     public void setCommandProvider(CommandProvider commandProvider) {
         this.commandProvider = commandProvider;
+        
+        if (this.commandProvider instanceof ShellAware) {
+            ((ShellAware)this.commandProvider).setShell(this);
+        }
     }
 
     public LineParser getLineParser() {
