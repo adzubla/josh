@@ -8,8 +8,6 @@ import josh.command.BuiltInCommandProvider;
 import josh.command.CommandNotFound;
 import josh.command.CommandProvider;
 import josh.command.CompoundCommandProvider;
-import josh.shell.BasicConsoleProvider;
-import josh.shell.ConsoleProvider;
 import josh.shell.LineParserImpl;
 import josh.shell.Shell;
 import josh.shell.jline.CommandCompleter;
@@ -22,8 +20,6 @@ import josh.shell.jline.JLineProvider;
  * josh -c 'cmd arg1 arg2' josh -f cmdlist.txt josh -v key=value josh
  */
 public class MyShell {
-
-    static boolean useJline = true;
 
     public static void main(String[] args) {
 
@@ -57,25 +53,19 @@ public class MyShell {
         shell.setInitializer(new MyShellInitializer());
         shell.setFinalizer(new MyShellFinalizer());
 
-        ConsoleProvider provider;
-        if (useJline) {
-            JLineProvider jline = new JLineProvider();
-            jline.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
-            jline.setPromptColor(Ansi.Color.CYAN);
-            jline.setInfoColor(Ansi.Color.GREEN);
-            jline.setWarnColor(Ansi.Color.YELLOW);
-            jline.setErrorColor(Ansi.Color.RED);
-            jline.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider.getCommands()));
-            provider = jline;
+        JLineProvider provider = new JLineProvider();
+        provider.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
+        provider.setPromptColor(Ansi.Color.CYAN);
+        provider.setInfoColor(Ansi.Color.GREEN);
+        provider.setWarnColor(Ansi.Color.YELLOW);
+        provider.setErrorColor(Ansi.Color.RED);
+        provider.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider.getCommands()));
 
-            // TODO: comando "clear" nao funciona...
-            if (commandProvider instanceof ExampleCommandProvider) {
-                ((ExampleCommandProvider)commandProvider).setjLineProvider(jline);
-            }
+        // TODO: comando "clear" nao funciona...
+        if (commandProvider instanceof ExampleCommandProvider) {
+            ((ExampleCommandProvider)commandProvider).setjLineProvider(provider);
         }
-        else {
-            provider = new BasicConsoleProvider();
-        }
+
         provider.setPrompt("> ");
         shell.setConsoleProvider(provider);
 
