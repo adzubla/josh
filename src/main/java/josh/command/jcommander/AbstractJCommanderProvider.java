@@ -29,6 +29,8 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
 
     protected abstract Executable getNewCommand(Class<? extends Executable> bean) throws CommandNotFound;
 
+    protected Executable actualCommand;
+
     @Override
     public void initialize() {
         commands = new JCommander();
@@ -73,7 +75,7 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
 
     @Override
     public void destroy() {
-
+        finalizeActualCommand();
     }
 
     @Override
@@ -103,11 +105,25 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
             throw new CommandNotFound(name);
         }
 
-        Executable executableBean = (Executable)jCommander.getObjects().get(0);
-        Executable executable = getNewCommand(executableBean.getClass());
-        new JCommander(executable).parse(arguments.toArray(new String[arguments.size()]));
+        try {
+            Executable executableBean = (Executable)jCommander.getObjects().get(0);
+            Executable executable = getNewCommand(executableBean.getClass());
+            this.actualCommand = executable;
+            new JCommander(executable).parse(arguments.toArray(new String[arguments.size()]));
 
-        return executable.execute();
+            if (executable instanceof ExecutableCommand) {
+                ExecutableCommand executableCommand = (ExecutableCommand) executable;
+                executableCommand.initialize();
+                CommandOutcome outcome = executableCommand.execute();
+                finalizeActualCommand();
+                return outcome;
+            } else {
+                return executable.execute();
+            }
+        }
+        finally {
+            this.actualCommand = null;
+        }
     }
 
     @Override
@@ -122,4 +138,9 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
         return commands.getCommands().get(commandName);
     }
 
+    private void finalizeActualCommand() {
+        if (this.actualCommand != null && this.actualCommand instanceof ExecutableCommand) {
+            ((ExecutableCommand)this.actualCommand).finalizeCommand();
+        }
+    }
 }
