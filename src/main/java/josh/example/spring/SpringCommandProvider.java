@@ -1,9 +1,10 @@
-package josh.example;
+package josh.example.spring;
 
 import java.util.Collection;
 
 import org.springframework.context.ApplicationContext;
 
+import josh.command.CommandNotFound;
 import josh.command.jcommander.AbstractJCommanderProvider;
 import josh.command.jcommander.Executable;
 
@@ -17,6 +18,11 @@ public class SpringCommandProvider extends AbstractJCommanderProvider {
     @Override
     protected Collection<Executable> findCommands() {
         return ctx.getBeansOfType(Executable.class).values();
+    }
+
+    @Override
+    protected Executable getNewCommand(Class<? extends Executable> bean) throws CommandNotFound {
+        return ctx.getBean(bean);
     }
 
 }

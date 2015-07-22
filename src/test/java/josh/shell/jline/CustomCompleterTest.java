@@ -1,15 +1,13 @@
 package josh.shell.jline;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import josh.command.CommandDescriptor;
+import josh.command.builtin.BuiltInCommandProvider;
 import josh.shell.LineParserImpl;
 
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
@@ -28,8 +26,7 @@ public class CustomCompleterTest {
     public void before() {
         candidates = new ArrayList<String>();
 
-        Map<String, CommandDescriptor> commands = new HashMap<String, CommandDescriptor>();
-        customCompleter = new CommandCompleter(new LineParserImpl(), commands);
+        customCompleter = new CommandCompleter(new LineParserImpl(), new BuiltInCommandProvider());
     }
 
     private void print(int index, List<String> candidates) {

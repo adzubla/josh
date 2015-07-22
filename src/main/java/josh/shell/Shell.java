@@ -11,16 +11,10 @@ import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
 
 /**
- * Controla os componentes configurados
- * - inicializa comandos
- * - obtem linha do console
- * - substitui variaveis (environment variables, system properties,
- * local properties)
- * - invoca comando
- * - chama shutdownHook
+ * Controla os componentes configurados - inicializa comandos - obtem linha do console - substitui variaveis
+ * (environment variables, system properties, local properties) - invoca comando - chama shutdownHook
  * <p/>
- * Exit codes
- * http://www.tldp.org/LDP/abs/html/exitcodes.html
+ * Exit codes http://www.tldp.org/LDP/abs/html/exitcodes.html
  */
 public class Shell {
     private static final Logger LOG = LoggerFactory.getLogger(Shell.class);
@@ -38,6 +32,8 @@ public class Shell {
     public CommandOutcome run() {
         LOG.info("Starting shell");
 
+        registerShutdownHook();
+
         consoleProvider.initialize();
         commandProvider.initialize();
 
@@ -47,15 +43,26 @@ public class Shell {
 
         CommandOutcome commandOutcome = repl();
 
+        return commandOutcome;
+    }
+
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                LOG.info("Ending shell");
+                Shell.this.destroy();
+            }
+        });
+    }
+
+    private void destroy() {
         if (finalizer != null) {
             finalizer.destroy(this);
         }
 
         commandProvider.destroy();
         consoleProvider.destroy();
-
-        LOG.info("Ending shell");
-        return commandOutcome;
     }
 
     protected CommandOutcome repl() {
@@ -130,7 +137,7 @@ public class Shell {
 
     public void setCommandProvider(CommandProvider commandProvider) {
         this.commandProvider = commandProvider;
-        
+
         if (this.commandProvider instanceof ShellAware) {
             ((ShellAware)this.commandProvider).setShell(this);
         }

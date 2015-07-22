@@ -27,6 +27,8 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
 
     protected abstract Collection<Executable> findCommands();
 
+    protected abstract Executable getNewCommand(Class<? extends Executable> bean) throws CommandNotFound;
+
     @Override
     public void initialize() {
         commands = new JCommander();
@@ -101,9 +103,10 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
             throw new CommandNotFound(name);
         }
 
-        jCommander.parse(arguments.toArray(new String[arguments.size()]));
+        Executable executableBean = (Executable)jCommander.getObjects().get(0);
+        Executable executable = getNewCommand(executableBean.getClass());
+        new JCommander(executable).parse(arguments.toArray(new String[arguments.size()]));
 
-        Executable executable = (Executable)jCommander.getObjects().get(0);
         return executable.execute();
     }
 

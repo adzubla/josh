@@ -1,4 +1,4 @@
-package josh.example;
+package josh.example.simple;
 
 import java.io.File;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
 import josh.command.HelpFormatter;
+import josh.example.YesNo;
 
 public class ExampleCommandProvider implements CommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(ExampleCommandProvider.class);

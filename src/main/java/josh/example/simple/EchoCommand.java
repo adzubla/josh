@@ -1,4 +1,4 @@
-package josh.example;
+package josh.example.simple;
 
 import java.util.List;
 

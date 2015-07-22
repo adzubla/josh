@@ -1,30 +1,26 @@
-package josh.example;
+package josh.example.jcommander;
 
 import java.util.Arrays;
 
 import org.fusesource.jansi.Ansi;
 
-import josh.command.builtin.BuiltInCommandProvider;
 import josh.command.CommandNotFound;
 import josh.command.CommandProvider;
 import josh.command.CompoundCommandProvider;
+import josh.command.builtin.BuiltInCommandProvider;
+import josh.example.MyShellFinalizer;
+import josh.example.MyShellInitializer;
 import josh.shell.LineParserImpl;
 import josh.shell.Shell;
 import josh.shell.jline.CommandCompleter;
 import josh.shell.jline.JLineProvider;
 
-/**
- * Integra todos os componentes com implementação default - le opções da linha de comando - configura shell - invoca
- * shell
- * <p/>
- * josh -c 'cmd arg1 arg2' josh -f cmdlist.txt josh -v key=value josh
- */
-public class MyShell {
+public class JCommanderShell {
 
     public static void main(String[] args) {
 
         CommandProvider commandProvider =
-                new CompoundCommandProvider(new BuiltInCommandProvider(), new ExampleCommandProvider());
+                new CompoundCommandProvider(new BuiltInCommandProvider(), new JCommanderProvider());
 
         int exitCode;
         if (args.length == 0) {
@@ -59,7 +55,7 @@ public class MyShell {
         provider.setInfoColor(Ansi.Color.GREEN);
         provider.setWarnColor(Ansi.Color.YELLOW);
         provider.setErrorColor(Ansi.Color.RED);
-        provider.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider.getCommands()));
+        provider.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider));
 
         provider.setPrompt("> ");
         shell.setConsoleProvider(provider);

@@ -45,12 +45,6 @@ public class JLineProvider implements ConsoleProvider {
     public void destroy() {
         console.shutdown();
         try {
-            TerminalFactory.get().restore();
-        }
-        catch (Exception e) {
-            LOG.error("TerminalFactory reset error", e);
-        }
-        try {
             if (history != null) {
                 history.flush();
             }
@@ -101,6 +95,10 @@ public class JLineProvider implements ConsoleProvider {
         }
         catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        catch (UnsupportedOperationException e) {
+            LOG.error("JLineProvider.readLine exception", e);
+            return null;
         }
     }
 

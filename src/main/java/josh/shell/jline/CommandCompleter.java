@@ -14,6 +14,7 @@ import jline.console.completer.FileNameCompleter;
 import jline.console.completer.NullCompleter;
 import jline.console.completer.StringsCompleter;
 import josh.command.CommandDescriptor;
+import josh.command.CommandProvider;
 import josh.shell.LineParser;
 import josh.shell.Range;
 
@@ -21,16 +22,16 @@ public class CommandCompleter implements Completer {
     private static final Logger LOG = LoggerFactory.getLogger(CommandCompleter.class);
 
     protected LineParser parser;
-    protected Map<String, CommandDescriptor> commands;
-    protected StringsCompleter commandNameCompleter;
+    protected CommandProvider commandProvider;
 
-    public CommandCompleter(LineParser parser, Map<String, CommandDescriptor> commands) {
+    public CommandCompleter(LineParser parser, CommandProvider commandProvider) {
         this.parser = parser;
-        this.commands = commands;
-        commandNameCompleter = new StringsCompleter(commands.keySet());
+        this.commandProvider = commandProvider;
     }
 
     public int complete(String buffer, int cursor, List candidates) {
+        StringsCompleter commandNameCompleter = new StringsCompleter(commandProvider.getCommands().keySet());
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("---------------------------------------------------------------");
             LOG.debug("buffer = [{}]", buffer);
@@ -52,7 +53,7 @@ public class CommandCompleter implements Completer {
             else {
                 Range firstRange = ranges.get(0);
                 String commandName = buffer.substring(firstRange.start, firstRange.end);
-                CommandDescriptor descriptor = commands.get(commandName);
+                CommandDescriptor descriptor = commandProvider.getCommands().get(commandName);
 
                 if (descriptor != null) {
                     Map<String, Class> options = descriptor.getOptions();

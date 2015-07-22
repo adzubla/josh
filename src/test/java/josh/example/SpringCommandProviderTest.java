@@ -17,6 +17,7 @@ import josh.command.CommandDescriptor;
 import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
 import josh.command.jcommander.Executable;
+import josh.example.spring.SpringCommandProvider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
