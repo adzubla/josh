@@ -2,10 +2,10 @@ package josh.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import josh.shell.Shell;
 import josh.shell.ShellAware;
@@ -18,26 +18,17 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
     private List<CommandProvider> providers = new ArrayList<CommandProvider>();
 
     public CompoundCommandProvider(CommandProvider... providers) {
-        this.providers = Arrays.asList(providers);
+        this.providers = new LinkedList<CommandProvider>(Arrays.asList(providers));
     }
 
     public void addCommandProvider(CommandProvider provider) {
         this.providers.add(provider);
     }
 
-    public static void main(String[] args) {
-        List<String> listTest = new ArrayList<String>();
-    }
-
-    protected List<CommandProvider> getProviders() {
-        // Always use the last implementation of any command
-        Collections.reverse(this.providers);
-        return this.providers;
-    }
-
     @Override
     public void initialize() {
-        for (CommandProvider provider : getProviders()) {
+        for (int i = providers.size() - 1; i >= 0; i-- ) {
+            CommandProvider provider = providers.get(i);
             provider.initialize();
         }
     }
@@ -51,7 +42,8 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public boolean isValidCommand(String commandName) {
-        for (CommandProvider provider : getProviders()) {
+        for (int i = providers.size() - 1; i >= 0; i-- ) {
+            CommandProvider provider = providers.get(i);
             if (provider.isValidCommand(commandName)) {
                 return true;
             }
@@ -61,7 +53,8 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public HelpFormatter getHelpFormatter(String commandName) {
-        for (CommandProvider provider : getProviders()) {
+        for (int i = providers.size() - 1; i >= 0; i-- ) {
+            CommandProvider provider = providers.get(i);
             if (provider.isValidCommand(commandName)) {
                 return provider.getHelpFormatter(commandName);
             }
@@ -72,7 +65,8 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
     @Override
     public CommandOutcome execute(List<String> args) throws CommandNotFound {
         String commandName = args.get(0);
-        for (CommandProvider provider : getProviders()) {
+        for (int i = providers.size() - 1; i >= 0; i-- ) {
+            CommandProvider provider = providers.get(i);
             if (provider.isValidCommand(commandName)) {
                 return provider.execute(args);
             }
@@ -82,8 +76,8 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public Map<String, CommandDescriptor> getCommands() {
-        Map<String, CommandDescriptor> commands = new HashMap<String, CommandDescriptor>();
-        for (CommandProvider provider : getProviders()) {
+        Map<String, CommandDescriptor> commands = new TreeMap<String, CommandDescriptor>();
+        for (CommandProvider provider : providers) {
             commands.putAll(provider.getCommands());
         }
         return commands;
@@ -91,7 +85,7 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public void setShell(Shell shell) {
-        for (CommandProvider provider : getProviders()) {
+        for (CommandProvider provider : providers) {
             if (provider instanceof ShellAware) {
                 ((ShellAware)provider).setShell(shell);
             }

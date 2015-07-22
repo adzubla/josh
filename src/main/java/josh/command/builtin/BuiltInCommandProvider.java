@@ -1,4 +1,4 @@
-package josh.command;
+package josh.command.builtin;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,8 +8,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import josh.example.DateCommand;
-import josh.example.HelpCommand;
+import josh.command.CommandDescriptor;
+import josh.command.CommandNotFound;
+import josh.command.CommandOutcome;
+import josh.command.CommandProvider;
+import josh.command.HelpFormatter;
 import josh.shell.Shell;
 import josh.shell.ShellAware;
 import josh.shell.jline.JLineProvider;
@@ -63,7 +66,17 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public HelpFormatter getHelpFormatter(String commandName) {
-        return null;
+        return new HelpFormatter() {
+            @Override
+            public String formatHelpMessage(CommandDescriptor cd) {
+                // TODO
+                StringBuilder sb = new StringBuilder();
+                sb.append(cd.getCommandDescription()).append("\n");
+                sb.append(cd.getCommandName()).append("\n");
+                sb.append("HELP").append("\n");
+                return sb.toString();
+            }
+        };
     }
 
     @Override
@@ -93,7 +106,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
             commandOutcome.setExitCode(dateCommand.run(arguments));
         }
         else if ("help".equals(commandDescriptor.getCommandName())) {
-            HelpCommand helpCommand = new HelpCommand(shell.getCommandProvider().getCommands());
+            HelpCommand helpCommand = new HelpCommand(shell);
             commandOutcome.setExitCode(helpCommand.run(arguments));
         }
         else if ("clear".equals(commandDescriptor.getCommandName())) {

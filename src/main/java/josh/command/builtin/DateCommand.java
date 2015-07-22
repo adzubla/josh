@@ -1,4 +1,4 @@
-package josh.example;
+package josh.command.builtin;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

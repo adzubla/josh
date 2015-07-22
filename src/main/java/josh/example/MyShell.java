@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.fusesource.jansi.Ansi;
 
-import josh.command.BuiltInCommandProvider;
+import josh.command.builtin.BuiltInCommandProvider;
 import josh.command.CommandNotFound;
 import josh.command.CommandProvider;
 import josh.command.CompoundCommandProvider;
