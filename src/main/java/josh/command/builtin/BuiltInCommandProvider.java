@@ -24,7 +24,15 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
     protected Shell shell;
 
-    public BuiltInCommandProvider() {
+    protected HelpFormatter helpFormatter;
+
+    public BuiltInCommandProvider withCustomHelpFormatter(HelpFormatter helpFormatter) {
+        this.helpFormatter = helpFormatter;
+        return this;
+    }
+
+    @Override
+    public void initialize() {
         CommandDescriptor dateDescriptor = new CommandDescriptor();
         dateDescriptor.setCommandName("date");
         dateDescriptor.setCommandDescription("Display current date.");
@@ -47,11 +55,21 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         commands.put(clearDescriptor.getCommandName(), clearDescriptor);
         commands.put(exitDescriptor.getCommandName(), exitDescriptor);
 
-        LOG.debug("commands = {}", commands);    }
+        if (this.helpFormatter == null) {
+            helpFormatter = new HelpFormatter() {
+                @Override
+                public String formatHelpMessage(CommandDescriptor cd) {
+                    // TODO
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(cd.getCommandDescription()).append("\n");
+                    sb.append(cd.getCommandName()).append("\n");
+                    sb.append("HELP").append("\n");
+                    return sb.toString();
+                }
+            };
+        }
 
-    @Override
-    public void initialize() {
-
+        LOG.debug("commands = {}", commands);
     }
 
     @Override
@@ -66,17 +84,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public HelpFormatter getHelpFormatter(String commandName) {
-        return new HelpFormatter() {
-            @Override
-            public String formatHelpMessage(CommandDescriptor cd) {
-                // TODO
-                StringBuilder sb = new StringBuilder();
-                sb.append(cd.getCommandDescription()).append("\n");
-                sb.append(cd.getCommandName()).append("\n");
-                sb.append("HELP").append("\n");
-                return sb.toString();
-            }
-        };
+        return helpFormatter;
     }
 
     @Override
@@ -111,7 +119,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         }
         else if ("clear".equals(commandDescriptor.getCommandName())) {
             try {
-                JLineProvider jLineProvider = (JLineProvider) shell.getConsoleProvider();
+                JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
                 jLineProvider.getConsole().clearScreen();
             }
             catch (IOException e) {

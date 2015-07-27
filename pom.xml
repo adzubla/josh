@@ -75,4 +75,22 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>tivit</id>
+            <distributionManagement>
+                <repository>
+                    <id>nexus</id>
+                    <name>Internal Release Repository</name>
+                    <url>http://10.0.132.103:8081/nexus/content/repositories/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>nexus-snapshots</id>
+                    <name>Internal Snapshot Repository</name>
+                    <url>http://10.0.132.103:8081/nexus/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
 </project>
