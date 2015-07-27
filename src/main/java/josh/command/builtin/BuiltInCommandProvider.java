@@ -56,17 +56,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         commands.put(exitDescriptor.getCommandName(), exitDescriptor);
 
         if (this.helpFormatter == null) {
-            helpFormatter = new HelpFormatter() {
-                @Override
-                public String formatHelpMessage(CommandDescriptor cd) {
-                    // TODO
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(cd.getCommandDescription()).append("\n");
-                    sb.append(cd.getCommandName()).append("\n");
-                    sb.append("HELP").append("\n");
-                    return sb.toString();
-                }
-            };
+            helpFormatter = new BuiltInHelpFormatter();
         }
 
         LOG.debug("commands = {}", commands);
@@ -136,4 +126,29 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
     public void setShell(Shell shell) {
         this.shell = shell;
     }
+
+    private class BuiltInHelpFormatter implements HelpFormatter {
+
+        private String NEW_LINE = "\n";
+
+        @Override
+        public String formatHelpMessage(CommandDescriptor cd) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(cd.getCommandDescription()).append(NEW_LINE);
+            sb.append("Usage: ").append(cd.getCommandName());
+            if ("date".equals(cd.getCommandName())) {
+                sb.append(" [options]").append(NEW_LINE);
+                sb.append("  Options: ").append(NEW_LINE);
+                sb.append("      Date Format [optional]").append(NEW_LINE);
+            }
+            else if ("help".equals(cd.getCommandName())) {
+                sb.append(" [options]").append(NEW_LINE);
+                sb.append("  Options: ").append(NEW_LINE);
+                sb.append("      Command Name [optional]").append(NEW_LINE);
+            }
+            sb.append(NEW_LINE);
+            return sb.toString();
+        }
+    }
+
 }
