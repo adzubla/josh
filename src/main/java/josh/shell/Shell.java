@@ -2,6 +2,7 @@ package josh.shell;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
+import josh.utils.Assert;
 
 /**
  * Controla os componentes configurados - inicializa comandos - obtem linha do console - substitui variaveis
@@ -29,20 +31,24 @@ public class Shell {
     protected ShellInitializer initializer;
     protected ShellFinalizer finalizer;
 
+    protected ShellState state = ShellState.PREPARING;
+
+    private final Object MUTEX = new Object();
+
     public CommandOutcome run() {
         LOG.info("Starting shell");
-
-        registerShutdownHook();
-
-        consoleProvider.initialize();
-        commandProvider.initialize();
-
-        if (initializer != null) {
-            initializer.initialize(this);
-        }
-
+        Assert.notNull(lineParser, "Could not run the shell without a lineParser");
+        initialize();
         CommandOutcome commandOutcome = repl();
+        destroy();
+        return commandOutcome;
+    }
 
+    public CommandOutcome executeCommand(List<String> args) {
+        LOG.info("Executing command in shell");
+        initialize();
+        CommandOutcome commandOutcome = runCommand(args);
+        destroy();
         return commandOutcome;
     }
 
@@ -56,13 +62,38 @@ public class Shell {
         });
     }
 
-    private void destroy() {
-        if (finalizer != null) {
-            finalizer.destroy(this);
-        }
+    protected void initialize() {
+        synchronized (MUTEX) {
+            if (ShellState.PREPARING.equals(state)) {
+                LOG.info("Initializing shell");
+                Assert.notNull(consoleProvider, "ConsoleProvider should never be null");
+                Assert.notNull(commandProvider, "CommandProvider should never be null");
 
-        commandProvider.destroy();
-        consoleProvider.destroy();
+                registerShutdownHook();
+                consoleProvider.initialize();
+                commandProvider.initialize();
+
+                if (initializer != null) {
+                    initializer.initialize(this);
+                }
+                state = ShellState.STARTED;
+            }
+        }
+    }
+
+    protected void destroy() {
+        synchronized (MUTEX) {
+            if (ShellState.STARTED.equals(state)) {
+                LOG.info("Destroying shell");
+                if (finalizer != null) {
+                    finalizer.destroy(this);
+                }
+
+                commandProvider.destroy();
+                consoleProvider.destroy();
+                state = ShellState.FINALIZED;
+            }
+        }
     }
 
     protected CommandOutcome repl() {
@@ -78,28 +109,8 @@ public class Shell {
                 break;
             }
             if (!line.trim().equals("")) {
-                try {
-                    outcome = commandProvider.execute(lineParser.getTokens(line));
-                    LOG.debug("outcome = {}", outcome);
-                    if (outcome.getExitCode() != 0) {
-                        consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
-                    }
-                }
-                catch (CommandNotFound e) {
-                    LOG.error("Command {} not found.", e.getName());
-                    consoleProvider.displayWarning("Command " + e.getName() + " not found.");
-                    outcome.setExitCode(127);
-                }
-                catch (RuntimeException e) {
-                    LOG.error("Error executing command", e);
-                    if (displayStackTraceOnError) {
-                        StringWriter sw = new StringWriter();
-                        e.printStackTrace(new PrintWriter(sw));
-                        consoleProvider.displayError(sw.toString());
-                    }
-                    consoleProvider.displayError("Error executing command: " + e.getMessage());
-                    outcome.setExitCode(126);
-                }
+                List<String> args = lineParser.getTokens(line);
+                outcome = runCommand(args);
                 if (exitOnError && outcome.isErrorState()) {
                     LOG.info("Exiting on error");
                     break;
@@ -112,6 +123,33 @@ public class Shell {
         }
         LOG.info("Ending repl");
         LOG.info("last outcome = {}", outcome);
+        return outcome;
+    }
+
+    private CommandOutcome runCommand(List<String> args) {
+        CommandOutcome outcome = new CommandOutcome();
+        try {
+            outcome = commandProvider.execute(args);
+            LOG.debug("outcome = {}", outcome);
+            if (outcome.getExitCode() != 0) {
+                consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
+            }
+        }
+        catch (CommandNotFound e) {
+            LOG.error("Command {} not found.", e.getName());
+            consoleProvider.displayWarning("Command " + e.getName() + " not found.");
+            outcome.setExitCode(127);
+        }
+        catch (RuntimeException e) {
+            LOG.error("Error executing command", e);
+            if (displayStackTraceOnError) {
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                consoleProvider.displayError(sw.toString());
+            }
+            consoleProvider.displayError("Error executing command: " + e.getMessage());
+            outcome.setExitCode(126);
+        }
         return outcome;
     }
 
@@ -164,6 +202,8 @@ public class Shell {
     }
 
     public void setInitializer(ShellInitializer initializer) {
+        this.assertShellNotStarted("Can't set a new initializer");
+        this.assertShellNotFinalized("Can't set a new initializer");
         this.initializer = initializer;
     }
 
@@ -172,6 +212,27 @@ public class Shell {
     }
 
     public void setFinalizer(ShellFinalizer finalizer) {
+        this.assertShellNotStarted("Can't set a new finalizer");
+        this.assertShellNotFinalized("Can't set a new finalizer");
         this.finalizer = finalizer;
     }
+
+    protected void assertShellNotStarted(String message) {
+        if (ShellState.STARTED.equals(state)) {
+            throw new IllegalStateException(message + "\nShell is already started");
+        }
+    }
+
+    protected void assertShellNotFinalized(String message) {
+        if (ShellState.FINALIZED.equals(state)) {
+            throw new IllegalStateException(message + "\nShell is already finalized");
+        }
+    }
+
+    protected enum ShellState {
+        PREPARING,
+        STARTED,
+        FINALIZED
+    }
+
 }
