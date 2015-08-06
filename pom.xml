@@ -7,5 +7,6 @@
 
     <modules>
         <module>josh</module>
+        <module>josh-example</module>
     </modules>
 </project>
