@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jline.console.ConsoleReader;
+import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import josh.shell.ConsoleProvider;
@@ -30,6 +31,8 @@ public class JLineProvider implements ConsoleProvider {
         try {
             System.setProperty("jline.shutdownhook", "true");
             console = new ConsoleReader();
+            console.setExpandEvents(false);
+            console.setHandleUserInterrupt(true);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -38,12 +41,15 @@ public class JLineProvider implements ConsoleProvider {
 
     @Override
     public void initialize() {
+        LOG.debug("initialize");
     }
 
     @Override
     public void destroy() {
-        console.shutdown();
+        LOG.debug("destroy");
         try {
+            console.flush();
+            console.shutdown();
             if (history != null) {
                 history.flush();
             }
@@ -87,6 +93,16 @@ public class JLineProvider implements ConsoleProvider {
         }
     }
 
+    public void print(CharSequence charSequence) {
+        try {
+            console.print(charSequence);
+            console.flush();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public String readLine() {
         try {
@@ -94,6 +110,11 @@ public class JLineProvider implements ConsoleProvider {
         }
         catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        catch (UserInterruptException e) {
+            LOG.debug("UserInterruptException (user pressed Ctrl-C)");
+            print("^C");
+            return null;
         }
         catch (UnsupportedOperationException e) {
             LOG.error("JLineProvider.readLine exception", e);
