@@ -132,32 +132,27 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
     }
 
     protected int propertiesCommand() {
-
         Properties properties = System.getProperties();
         for (String key : properties.stringPropertyNames()) {
             String value = properties.getProperty(key);
             System.out.println(key + "=" + value);
         }
-
         return 0;
     }
 
     protected int envCommand() {
-
         Map<String, String> env = System.getenv();
         for (String key : env.keySet()) {
             String value = env.get(key);
             System.out.println(key + "=" + value);
         }
-
         return 0;
     }
 
     public int dateCommand(List<String> arguments) {
-        String format = "yyyy-MM-dd'T'HH:mm:ss";
-
         Date currentDate = new Date();
 
+        String format = "yyyy-MM-dd'T'HH:mm:ss";
         if (arguments.size() == 1) {
             format = arguments.get(0);
         }
@@ -168,7 +163,6 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         System.out.println(sdf.format(currentDate));
-
         return 0;
     }
 
