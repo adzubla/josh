@@ -7,7 +7,6 @@ package josh.shell;
  * - entrada de password
  * - processa TAB
  */
-// TextDevice
 public interface ConsoleProvider {
 
     void initialize();

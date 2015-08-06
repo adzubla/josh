@@ -15,6 +15,9 @@ import josh.shell.Shell;
 import josh.shell.jline.CommandCompleter;
 import josh.shell.jline.JLineProvider;
 
+/**
+ * Example os a shell that has its commands implemented by JCommander
+ */
 public class JCommanderShell {
 
     public static void main(String[] args) {

@@ -33,7 +33,7 @@ public class Shell {
 
     protected ShellState state = ShellState.PREPARING;
 
-    private final Object MUTEX = new Object();
+    protected final Object MUTEX = new Object();
 
     public CommandOutcome run() {
         LOG.info("Starting shell");
@@ -176,8 +176,8 @@ public class Shell {
     public void setCommandProvider(CommandProvider commandProvider) {
         this.commandProvider = commandProvider;
 
-        if (this.commandProvider instanceof ShellAware) {
-            ((ShellAware)this.commandProvider).setShell(this);
+        if (this.commandProvider instanceof ShellAwareCommandProvider) {
+            ((ShellAwareCommandProvider)this.commandProvider).setShell(this);
         }
     }
 

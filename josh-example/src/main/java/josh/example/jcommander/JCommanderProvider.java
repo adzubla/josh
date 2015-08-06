@@ -8,6 +8,7 @@ import josh.command.jcommander.AbstractJCommanderProvider;
 import josh.command.jcommander.Executable;
 
 public class JCommanderProvider extends AbstractJCommanderProvider {
+
     @Override
     protected Collection<Executable> findCommands() {
         Collection<Executable> list = new ArrayList<Executable>();
@@ -22,4 +23,5 @@ public class JCommanderProvider extends AbstractJCommanderProvider {
         }
         throw new CommandNotFound(bean.getName());
     }
+
 }

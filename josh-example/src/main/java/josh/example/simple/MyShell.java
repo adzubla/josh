@@ -16,10 +16,10 @@ import josh.shell.jline.CommandCompleter;
 import josh.shell.jline.JLineProvider;
 
 /**
- * Integra todos os componentes com implementação default - le opções da linha de comando - configura shell - invoca
- * shell
+ * A simple example shell that uses JLine, built in commands provided by josh, and some example commands for testing.
  * <p/>
- * josh -c 'cmd arg1 arg2' josh -f cmdlist.txt josh -v key=value josh
+ * If the main method is invoked with no arguments, the prompt is shown and the user can type commands.
+ * If some argument is passed, they will be trated as a command to be executed and the program exits.
  */
 public class MyShell {
 

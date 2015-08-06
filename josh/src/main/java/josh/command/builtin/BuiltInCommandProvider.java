@@ -17,11 +17,14 @@ import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
 import josh.command.HelpFormatter;
 import josh.shell.Shell;
-import josh.shell.ShellAware;
+import josh.shell.ShellAwareCommandProvider;
 import josh.shell.jline.JLineProvider;
 
-public class BuiltInCommandProvider implements CommandProvider, ShellAware {
+public class BuiltInCommandProvider implements CommandProvider, ShellAwareCommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(BuiltInCommandProvider.class);
+
+    protected static final int EXIT_CODE_OK = 0;
+    protected static final int EXIT_CODE_ERROR = 1;
 
     protected Map<String, CommandDescriptor> commands;
 
@@ -61,7 +64,6 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public void destroy() {
-
     }
 
     @Override
@@ -126,58 +128,6 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         return commandOutcome;
     }
 
-    protected int pwdCommand() {
-        System.out.println(System.getProperty("user.dir"));
-        return 0;
-    }
-
-    protected int propertiesCommand() {
-        Properties properties = System.getProperties();
-        for (String key : properties.stringPropertyNames()) {
-            String value = properties.getProperty(key);
-            System.out.println(key + "=" + value);
-        }
-        return 0;
-    }
-
-    protected int envCommand() {
-        Map<String, String> env = System.getenv();
-        for (String key : env.keySet()) {
-            String value = env.get(key);
-            System.out.println(key + "=" + value);
-        }
-        return 0;
-    }
-
-    public int dateCommand(List<String> arguments) {
-        Date currentDate = new Date();
-
-        String format = "yyyy-MM-dd'T'HH:mm:ss";
-        if (arguments.size() == 1) {
-            format = arguments.get(0);
-        }
-        else if (!arguments.isEmpty()) {
-            System.err.println("Expected date format");
-            return 1;
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        System.out.println(sdf.format(currentDate));
-        return 0;
-    }
-
-    protected int clearCommand() {
-        try {
-            JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
-            jLineProvider.getConsole().clearScreen();
-            return 0;
-        }
-        catch (IOException e) {
-            LOG.error("clear errror", e);
-            return 1;
-        }
-    }
-
     private static class BuiltInHelpFormatter implements HelpFormatter {
 
         private String NEW_LINE = "\n";
@@ -200,6 +150,62 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
             sb.append(NEW_LINE);
             return sb.toString();
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Commands
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected int pwdCommand() {
+        System.out.println(System.getProperty("user.dir"));
+        return EXIT_CODE_OK;
+    }
+
+    protected int propertiesCommand() {
+        Properties properties = System.getProperties();
+        for (String key : properties.stringPropertyNames()) {
+            String value = properties.getProperty(key);
+            System.out.println(key + "=" + value);
+        }
+        return EXIT_CODE_OK;
+    }
+
+    protected int envCommand() {
+        Map<String, String> env = System.getenv();
+        for (String key : env.keySet()) {
+            String value = env.get(key);
+            System.out.println(key + "=" + value);
+        }
+        return EXIT_CODE_OK;
+    }
+
+    protected int clearCommand() {
+        try {
+            JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
+            jLineProvider.getConsole().clearScreen();
+            return EXIT_CODE_OK;
+        }
+        catch (IOException e) {
+            LOG.error("clear errror", e);
+            return EXIT_CODE_ERROR;
+        }
+    }
+
+    public int dateCommand(List<String> arguments) {
+        Date currentDate = new Date();
+
+        String format = "yyyy-MM-dd'T'HH:mm:ss";
+        if (arguments.size() == 1) {
+            format = arguments.get(0);
+        }
+        else if (!arguments.isEmpty()) {
+            System.err.println("Expected date format");
+            return EXIT_CODE_ERROR;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        System.out.println(sdf.format(currentDate));
+        return EXIT_CODE_OK;
     }
 
 }

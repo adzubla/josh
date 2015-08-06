@@ -5,10 +5,10 @@ import java.util.List;
 
 public class LineParserImpl implements LineParser {
 
-    public static final char SPACE_CHAR = ' ';
-    public static final char TAB_CHAR = '\t';
-    public static final char DOUBLE_QUOTE_CHAR = '"';
-    public static final char BACKSLASH_CHAR = '\\';
+    protected static final char SPACE_CHAR = ' ';
+    protected static final char TAB_CHAR = '\t';
+    protected static final char DOUBLE_QUOTE_CHAR = '"';
+    protected static final char BACKSLASH_CHAR = '\\';
 
     @Override
     public List<String> getTokens(CharSequence line) {

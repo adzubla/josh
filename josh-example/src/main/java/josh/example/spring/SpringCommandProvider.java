@@ -8,6 +8,9 @@ import josh.command.CommandNotFound;
 import josh.command.jcommander.AbstractJCommanderProvider;
 import josh.command.jcommander.Executable;
 
+/**
+ * Example of a CommandProvider that has its commands implemented as Spring beans (and JCommander)
+ */
 public class SpringCommandProvider extends AbstractJCommanderProvider {
     protected ApplicationContext ctx;
 

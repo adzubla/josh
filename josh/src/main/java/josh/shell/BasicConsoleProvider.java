@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 
 public class BasicConsoleProvider implements ConsoleProvider {
 
-    String prompt;
-    BufferedReader reader;
+    protected String prompt;
+    protected BufferedReader reader;
 
     public BasicConsoleProvider() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));

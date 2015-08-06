@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import josh.shell.Shell;
-import josh.shell.ShellAware;
+import josh.shell.ShellAwareCommandProvider;
 
 /**
  * Permite juntar comandos de várias fontes
  */
-public class CompoundCommandProvider implements CommandProvider, ShellAware {
+public class CompoundCommandProvider implements CommandProvider, ShellAwareCommandProvider {
 
-    private List<CommandProvider> providers = new ArrayList<CommandProvider>();
+    protected List<CommandProvider> providers = new ArrayList<CommandProvider>();
 
     public CompoundCommandProvider(CommandProvider... providers) {
         this.providers = new LinkedList<CommandProvider>(Arrays.asList(providers));
@@ -86,8 +86,8 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
     @Override
     public void setShell(Shell shell) {
         for (CommandProvider provider : providers) {
-            if (provider instanceof ShellAware) {
-                ((ShellAware)provider).setShell(shell);
+            if (provider instanceof ShellAwareCommandProvider) {
+                ((ShellAwareCommandProvider)provider).setShell(shell);
             }
         }
     }
