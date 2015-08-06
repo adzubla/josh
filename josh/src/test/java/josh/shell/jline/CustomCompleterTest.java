@@ -17,7 +17,6 @@ import josh.shell.LineParserImpl;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class CustomCompleterTest {
@@ -187,6 +186,18 @@ public class CustomCompleterTest {
     public void testComplete3_3() {
         complete("cmd2 opt1 opt2_a ");
         assertTrue(candidates.isEmpty());
+    }
+
+    @Test
+    public void testComplete3_4() {
+        complete("cmd2 opt1 opt2_a xx");
+        assertTrue(candidates.isEmpty());
+    }
+
+    @Test
+    public void testComplete3_5() {
+        complete("cmd2 opt1 opt2_a xx ");
+        assertThat(candidates, hasItems("opt1", "opt2_a", "opt2__a"));
     }
 
 }
