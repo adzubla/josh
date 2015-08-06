@@ -27,7 +27,7 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public void initialize() {
-        for (int i = providers.size() - 1; i >= 0; i-- ) {
+        for (int i = providers.size() - 1; i >= 0; i--) {
             CommandProvider provider = providers.get(i);
             provider.initialize();
         }
@@ -42,7 +42,7 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public boolean isValidCommand(String commandName) {
-        for (int i = providers.size() - 1; i >= 0; i-- ) {
+        for (int i = providers.size() - 1; i >= 0; i--) {
             CommandProvider provider = providers.get(i);
             if (provider.isValidCommand(commandName)) {
                 return true;
@@ -53,7 +53,7 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public HelpFormatter getHelpFormatter(String commandName) {
-        for (int i = providers.size() - 1; i >= 0; i-- ) {
+        for (int i = providers.size() - 1; i >= 0; i--) {
             CommandProvider provider = providers.get(i);
             if (provider.isValidCommand(commandName)) {
                 return provider.getHelpFormatter(commandName);
@@ -65,7 +65,7 @@ public class CompoundCommandProvider implements CommandProvider, ShellAware {
     @Override
     public CommandOutcome execute(List<String> args) throws CommandNotFound {
         String commandName = args.get(0);
-        for (int i = providers.size() - 1; i >= 0; i-- ) {
+        for (int i = providers.size() - 1; i >= 0; i--) {
             CommandProvider provider = providers.get(i);
             if (provider.isValidCommand(commandName)) {
                 return provider.execute(args);

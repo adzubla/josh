@@ -4,10 +4,9 @@ import java.util.Arrays;
 
 import org.fusesource.jansi.Ansi;
 
-import josh.command.builtin.BuiltInCommandProvider;
-import josh.command.CommandNotFound;
 import josh.command.CommandProvider;
 import josh.command.CompoundCommandProvider;
+import josh.command.builtin.BuiltInCommandProvider;
 import josh.example.MyShellFinalizer;
 import josh.example.MyShellInitializer;
 import josh.shell.BasicConsoleProvider;

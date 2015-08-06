@@ -112,12 +112,13 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
             new JCommander(executable).parse(arguments.toArray(new String[arguments.size()]));
 
             if (executable instanceof ExecutableCommand) {
-                ExecutableCommand executableCommand = (ExecutableCommand) executable;
+                ExecutableCommand executableCommand = (ExecutableCommand)executable;
                 executableCommand.initialize();
                 CommandOutcome outcome = executableCommand.execute();
                 finalizeActualCommand();
                 return outcome;
-            } else {
+            }
+            else {
                 return executable.execute();
             }
         }
