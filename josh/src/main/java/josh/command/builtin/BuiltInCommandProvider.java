@@ -46,6 +46,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         addDescriptor("pwd", "Display working directory.");
         addDescriptor("help", "Display commands.");
         addDescriptor("clear", "Clear screen.");
+        addDescriptor("sleep", "Sleep in milliseconds.");
         addDescriptor("exit", "Exit shell.");
 
         LOG.debug("commands = {}", commands);
@@ -118,6 +119,9 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         else if ("clear".equals(commandDescriptor.getCommandName())) {
             commandOutcome.setExitCode(clearCommand());
         }
+        else if ("sleep".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(sleepCommand(arguments));
+        }
         else if ("help".equals(commandDescriptor.getCommandName())) {
             HelpCommand helpCommand = new HelpCommand(shell);
             commandOutcome.setExitCode(helpCommand.run(arguments));
@@ -146,6 +150,11 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
                 sb.append(" [options]").append(NEW_LINE);
                 sb.append("  Options: ").append(NEW_LINE);
                 sb.append("      Command Name [optional]").append(NEW_LINE);
+            }
+            else if ("sleep".equals(cd.getCommandName())) {
+                sb.append(" [options]").append(NEW_LINE);
+                sb.append("  Options: ").append(NEW_LINE);
+                sb.append("      Time (in milliseconds)").append(NEW_LINE);
             }
             sb.append(NEW_LINE);
             return sb.toString();
@@ -205,6 +214,19 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
 
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         System.out.println(sdf.format(currentDate));
+        return EXIT_CODE_OK;
+    }
+
+    protected int sleepCommand(List<String> arguments) {
+        try {
+            Thread.sleep(Long.valueOf(arguments.get(0)));
+        }
+        catch (InterruptedException e) {
+            // ignore
+        }
+        catch (Exception e) {
+            shell.getConsoleProvider().displayError("Expected parameter in milliseconds");
+        }
         return EXIT_CODE_OK;
     }
 
