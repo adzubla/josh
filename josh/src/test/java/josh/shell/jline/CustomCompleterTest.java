@@ -1,24 +1,28 @@
 package josh.shell.jline;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import josh.command.builtin.BuiltInCommandProvider;
+import josh.command.CommandDescriptor;
+import josh.command.CommandNotFound;
+import josh.command.CommandOutcome;
+import josh.command.CommandProvider;
+import josh.command.HelpFormatter;
 import josh.shell.LineParserImpl;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-@Ignore
 public class CustomCompleterTest {
 
     List<String> candidates;
-    String line;
 
     CommandCompleter customCompleter;
 
@@ -26,106 +30,163 @@ public class CustomCompleterTest {
     public void before() {
         candidates = new ArrayList<String>();
 
-        customCompleter = new CommandCompleter(new LineParserImpl(), new BuiltInCommandProvider());
+        CommandProvider commandProvider = new CommandProvider() {
+            Map<String, CommandDescriptor> commands = new HashMap<String, CommandDescriptor>();
+
+            @Override
+            public void initialize() {
+                addCommand("cmd1", null);
+
+                Map<String, Class> options = new HashMap<String, Class>();
+                options.put("opt1", null);
+                options.put("opt2_a", String.class);
+                options.put("opt2__a", String.class);
+                addCommand("cmd2", options);
+
+                addCommand("mycmd3", null);
+
+                addCommand("conn", null);
+            }
+
+            @Override
+            public void destroy() {
+            }
+
+            @Override
+            public boolean isValidCommand(String commandName) {
+                return false;
+            }
+
+            @Override
+            public HelpFormatter getHelpFormatter(String commandName) {
+                return null;
+            }
+
+            @Override
+            public CommandOutcome execute(List<String> args) throws CommandNotFound {
+                return null;
+            }
+
+            @Override
+            public Map<String, CommandDescriptor> getCommands() {
+                return commands;
+            }
+
+            private void addCommand(String name, Map<String, Class> options) {
+                CommandDescriptor descriptor = new CommandDescriptor();
+                descriptor.setCommandName(name);
+                descriptor.setOptions(options);
+                commands.put(descriptor.getCommandName(), descriptor);
+            }
+        };
+        commandProvider.initialize();
+
+        customCompleter = new CommandCompleter(new LineParserImpl(), commandProvider);
     }
 
     private void print(int index, List<String> candidates) {
         System.out.println("index = " + index + "\tcandidates = " + candidates);
     }
 
-    private int complete(String buffer) {
+    private void complete(String buffer) {
         int index = customCompleter.complete(buffer, buffer.length(), candidates);
         print(index, candidates);
-        return index;
     }
 
     // Casos com 1 token
 
     @Test
     public void testComplete1_1() throws Exception {
-        int index = complete("");
+        complete("");
         assertThat(candidates, hasItems("cmd1", "cmd2", "mycmd3", "conn"));
-        assertEquals(0, index);
     }
 
     @Test
     public void testComplete1_2() throws Exception {
-        int index = complete("c");
+        complete("c");
         assertThat(candidates, hasItems("cmd1", "cmd2", "conn"));
-        assertEquals(0, index);
     }
 
     @Test
     public void testComplete1_3() throws Exception {
-        int index = complete("cmd");
+        complete("cmd");
         assertThat(candidates, hasItems("cmd1", "cmd2"));
-        assertEquals(0, index);
     }
 
     @Test
     public void testComplete1_4() throws Exception {
-        int index = complete("cmd2");
-        assertThat(candidates, hasItems("cmd2"));
-        assertEquals(0, index);
+        complete("cmd2");
+        assertThat(candidates, hasItems("cmd2 "));
     }
 
     @Test
     public void testComplete1_5() throws Exception {
-        int index = complete("co");
-        assertThat(candidates, hasItems("conn"));
-        assertEquals(0, index);
+        complete("co");
+        assertThat(candidates, hasItems("conn "));
     }
 
     @Test
     public void testComplete1_6() throws Exception {
-        int index = complete("conn");
-        assertThat(candidates, hasItems("conn"));
-        assertEquals(0, index);
+        complete("conn");
+        assertThat(candidates, hasItems("conn "));
     }
 
     // Casos com 2 tokens
 
     @Test
     public void testComplete2_1() {
-        int index = complete("cmd2");
-        assertThat(candidates, hasItems("conn"));
-        assertEquals(0, index);
+        complete("cmd2");
+        assertThat(candidates, hasItems("cmd2 "));
     }
 
     @Test
     public void testComplete2_2() {
-        int index = complete("cmd2 x");
-        assertEquals(0, candidates.size());
+        complete("cmd2 x");
+        assertTrue(candidates.isEmpty());
     }
 
     @Test
     public void testComplete2_3() {
-        int index = complete("cmd2 o");
-        assertEquals(2, candidates.size());
+        complete("cmd2 o");
+        assertThat(candidates, hasItems("opt1", "opt2_a", "opt2__a"));
     }
 
     @Test
     public void testComplete2_4() {
-        int index = complete("cmd2 ox");
-        assertEquals(0, candidates.size());
+        complete("cmd2 ox");
+        assertTrue(candidates.isEmpty());
     }
 
     @Test
     public void testComplete2_5() {
-        int index = complete("cmd2 opt2__");
-        assertEquals(1, candidates.size());
+        complete("cmd2 opt2_");
+        assertThat(candidates, hasItems("opt2_a", "opt2__a"));
     }
 
     @Test
     public void testComplete2_6() {
-        int index = complete("cmd2 opt2_a");
-        assertEquals(0, candidates.size());
+        complete("cmd2 opt2_a");
+        assertThat(candidates, hasItems("opt2_a "));
+    }
+
+    // Option values
+
+    @Test
+    public void testComplete3_1() {
+        complete("cmd2 opt1 ");
+        assertThat(candidates, hasItems("opt1", "opt2_a", "opt2__a"));
     }
 
     @Test
-    public void testComplete2_7() {
-        int index = complete("cmd2 opt2_a ");
-        assertEquals(2, candidates.size());
+    public void testComplete3_2() {
+        complete("cmd2 opt1 opt2_");
+        assertThat(candidates, hasItems("opt2_a", "opt2__a"));
+    }
+
+    @Test
+    public void testComplete3_3() {
+        complete("cmd2 opt1 opt2_a ");
+        assertTrue(candidates.isEmpty());
     }
 
 }
