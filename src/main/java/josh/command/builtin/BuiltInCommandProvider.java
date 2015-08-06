@@ -33,33 +33,27 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
     @Override
     public void initialize() {
-        CommandDescriptor dateDescriptor = new CommandDescriptor();
-        dateDescriptor.setCommandName("date");
-        dateDescriptor.setCommandDescription("Display current date.");
-
-        CommandDescriptor helpDescriptor = new CommandDescriptor();
-        helpDescriptor.setCommandName("help");
-        helpDescriptor.setCommandDescription("Display commands.");
-
-        CommandDescriptor clearDescriptor = new CommandDescriptor();
-        clearDescriptor.setCommandName("clear");
-        clearDescriptor.setCommandDescription("Clear screen.");
-
-        CommandDescriptor exitDescriptor = new CommandDescriptor();
-        exitDescriptor.setCommandName("exit");
-        exitDescriptor.setCommandDescription("Exit shell.");
-
         commands = new HashMap<String, CommandDescriptor>();
-        commands.put(dateDescriptor.getCommandName(), dateDescriptor);
-        commands.put(helpDescriptor.getCommandName(), helpDescriptor);
-        commands.put(clearDescriptor.getCommandName(), clearDescriptor);
-        commands.put(exitDescriptor.getCommandName(), exitDescriptor);
+
+        addDescriptor("date", "Display current date.");
+        addDescriptor("props", "Display Java system properties.");
+        addDescriptor("env", "Display environment variables.");
+        addDescriptor("help", "Display commands.");
+        addDescriptor("clear", "Clear screen.");
+        addDescriptor("exit", "Exit shell.");
+
+        LOG.debug("commands = {}", commands);
 
         if (this.helpFormatter == null) {
             helpFormatter = new BuiltInHelpFormatter();
         }
+    }
 
-        LOG.debug("commands = {}", commands);
+    private void addDescriptor(String name, String description) {
+        CommandDescriptor descriptor = new CommandDescriptor();
+        descriptor.setCommandName(name);
+        descriptor.setCommandDescription(description);
+        commands.put(descriptor.getCommandName(), descriptor);
     }
 
     @Override
@@ -102,6 +96,14 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         if ("date".equals(commandDescriptor.getCommandName())) {
             DateCommand dateCommand = new DateCommand();
             commandOutcome.setExitCode(dateCommand.run(arguments));
+        }
+        else if ("env".equals(commandDescriptor.getCommandName())) {
+            EnvironmentCommand environmentCommand = new EnvironmentCommand();
+            commandOutcome.setExitCode(environmentCommand.run(arguments));
+        }
+        else if ("props".equals(commandDescriptor.getCommandName())) {
+            PropertiesCommand propertiesCommand = new PropertiesCommand();
+            commandOutcome.setExitCode(propertiesCommand.run(arguments));
         }
         else if ("help".equals(commandDescriptor.getCommandName())) {
             HelpCommand helpCommand = new HelpCommand(shell);

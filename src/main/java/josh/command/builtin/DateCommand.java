@@ -6,23 +6,24 @@ import java.util.List;
 
 public class DateCommand {
 
-    //format yyyy-MM-dd'T'HH:mm:ss
+    private static final String defaultFormat = "yyyy-MM-dd'T'HH:mm:ss";
 
     public int run(List<String> arguments) {
 
         Date currentDate = new Date();
 
-        if (arguments.isEmpty()) {
-            System.out.println(currentDate);
+        String format = defaultFormat;
+        if (arguments.size() == 1) {
+            format = arguments.get(0);
         }
-        else if (arguments.size() == 1) {
-            SimpleDateFormat sdf = new SimpleDateFormat(arguments.get(0));
-            System.out.println(sdf.format(currentDate));
-        }
-        else {
-            //throw new RuntimeException("Invalid arguments.");
+        else if (!arguments.isEmpty()) {
+            System.err.println("Expected date format");
             return 1;
         }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        System.out.println(sdf.format(currentDate));
+
         return 0;
     }
 
