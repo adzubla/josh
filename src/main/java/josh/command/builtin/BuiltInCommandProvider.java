@@ -1,9 +1,12 @@
 package josh.command.builtin;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +29,8 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
 
     protected HelpFormatter helpFormatter;
 
-    public BuiltInCommandProvider withCustomHelpFormatter(HelpFormatter helpFormatter) {
+    public void setCustomHelpFormatter(HelpFormatter helpFormatter) {
         this.helpFormatter = helpFormatter;
-        return this;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         addDescriptor("date", "Display current date.");
         addDescriptor("props", "Display Java system properties.");
         addDescriptor("env", "Display environment variables.");
+        addDescriptor("pwd", "Display working directory.");
         addDescriptor("help", "Display commands.");
         addDescriptor("clear", "Clear screen.");
         addDescriptor("exit", "Exit shell.");
@@ -67,8 +70,18 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
     }
 
     @Override
+    public void setShell(Shell shell) {
+        this.shell = shell;
+    }
+
+    @Override
     public HelpFormatter getHelpFormatter(String commandName) {
         return helpFormatter;
+    }
+
+    @Override
+    public Map<String, CommandDescriptor> getCommands() {
+        return new HashMap<String, CommandDescriptor>(commands);
     }
 
     @Override
@@ -84,39 +97,28 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         return invokeCommand(commandDescriptor, arguments);
     }
 
-    @Override
-    public Map<String, CommandDescriptor> getCommands() {
-        return new HashMap<String, CommandDescriptor>(commands);
-    }
-
     private CommandOutcome invokeCommand(CommandDescriptor commandDescriptor, List<String> arguments) {
         LOG.debug("invokeCommand {}, {}", commandDescriptor.getCommandName(), arguments);
 
         CommandOutcome commandOutcome = new CommandOutcome();
         if ("date".equals(commandDescriptor.getCommandName())) {
-            DateCommand dateCommand = new DateCommand();
-            commandOutcome.setExitCode(dateCommand.run(arguments));
+            commandOutcome.setExitCode(dateCommand(arguments));
         }
         else if ("env".equals(commandDescriptor.getCommandName())) {
-            EnvironmentCommand environmentCommand = new EnvironmentCommand();
-            commandOutcome.setExitCode(environmentCommand.run(arguments));
+            commandOutcome.setExitCode(envCommand());
         }
         else if ("props".equals(commandDescriptor.getCommandName())) {
-            PropertiesCommand propertiesCommand = new PropertiesCommand();
-            commandOutcome.setExitCode(propertiesCommand.run(arguments));
+            commandOutcome.setExitCode(propertiesCommand());
+        }
+        else if ("pwd".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(pwdCommand());
+        }
+        else if ("clear".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(clearCommand());
         }
         else if ("help".equals(commandDescriptor.getCommandName())) {
             HelpCommand helpCommand = new HelpCommand(shell);
             commandOutcome.setExitCode(helpCommand.run(arguments));
-        }
-        else if ("clear".equals(commandDescriptor.getCommandName())) {
-            try {
-                JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
-                jLineProvider.getConsole().clearScreen();
-            }
-            catch (IOException e) {
-                LOG.error("clear errror", e);
-            }
         }
         else if ("exit".equals(commandDescriptor.getCommandName())) {
             commandOutcome.setExitRequest();
@@ -124,12 +126,65 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAware {
         return commandOutcome;
     }
 
-    @Override
-    public void setShell(Shell shell) {
-        this.shell = shell;
+    protected int pwdCommand() {
+        System.out.println(System.getProperty("user.dir"));
+        return 0;
     }
 
-    private class BuiltInHelpFormatter implements HelpFormatter {
+    protected int propertiesCommand() {
+
+        Properties properties = System.getProperties();
+        for (String key : properties.stringPropertyNames()) {
+            String value = properties.getProperty(key);
+            System.out.println(key + "=" + value);
+        }
+
+        return 0;
+    }
+
+    protected int envCommand() {
+
+        Map<String, String> env = System.getenv();
+        for (String key : env.keySet()) {
+            String value = env.get(key);
+            System.out.println(key + "=" + value);
+        }
+
+        return 0;
+    }
+
+    public int dateCommand(List<String> arguments) {
+        String format = "yyyy-MM-dd'T'HH:mm:ss";
+
+        Date currentDate = new Date();
+
+        if (arguments.size() == 1) {
+            format = arguments.get(0);
+        }
+        else if (!arguments.isEmpty()) {
+            System.err.println("Expected date format");
+            return 1;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        System.out.println(sdf.format(currentDate));
+
+        return 0;
+    }
+
+    protected int clearCommand() {
+        try {
+            JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
+            jLineProvider.getConsole().clearScreen();
+            return 0;
+        }
+        catch (IOException e) {
+            LOG.error("clear errror", e);
+            return 1;
+        }
+    }
+
+    private static class BuiltInHelpFormatter implements HelpFormatter {
 
         private String NEW_LINE = "\n";
 
