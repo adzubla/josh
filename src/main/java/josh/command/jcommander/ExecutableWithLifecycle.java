@@ -5,7 +5,7 @@ package josh.command.jcommander;
  *
  * @author Jeferson Estevo
  */
-public interface ExecutableCommand extends Executable {
+public interface ExecutableWithLifecycle extends Executable {
 
     /**
      * Method called before the {@link Executable#execute()} method

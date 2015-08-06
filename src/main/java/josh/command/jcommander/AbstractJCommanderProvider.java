@@ -111,10 +111,10 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
             this.actualCommand = executable;
             new JCommander(executable).parse(arguments.toArray(new String[arguments.size()]));
 
-            if (executable instanceof ExecutableCommand) {
-                ExecutableCommand executableCommand = (ExecutableCommand)executable;
-                executableCommand.initialize();
-                CommandOutcome outcome = executableCommand.execute();
+            if (executable instanceof ExecutableWithLifecycle) {
+                ExecutableWithLifecycle executableWithLifecycle = (ExecutableWithLifecycle)executable;
+                executableWithLifecycle.initialize();
+                CommandOutcome outcome = executableWithLifecycle.execute();
                 finalizeActualCommand();
                 return outcome;
             }
@@ -140,8 +140,9 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
     }
 
     private void finalizeActualCommand() {
-        if (this.actualCommand != null && this.actualCommand instanceof ExecutableCommand) {
-            ((ExecutableCommand)this.actualCommand).finalizeCommand();
+        if (this.actualCommand != null && this.actualCommand instanceof ExecutableWithLifecycle) {
+            ((ExecutableWithLifecycle)this.actualCommand).finalizeCommand();
         }
     }
+
 }
