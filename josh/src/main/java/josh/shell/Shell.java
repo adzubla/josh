@@ -41,8 +41,15 @@ public class Shell {
 
     protected final Object MUTEX = new Object();
 
-    public CommandOutcome run() {
+    protected boolean interactive;
+
+    public boolean isInteractive() {
+        return interactive;
+    }
+
+    public CommandOutcome runInteractive() {
         LOG.info("Starting shell");
+        interactive = true;
         initialize();
         CommandOutcome commandOutcome = repl();
         destroy(false);

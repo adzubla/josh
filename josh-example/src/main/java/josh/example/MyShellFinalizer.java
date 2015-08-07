@@ -8,8 +8,10 @@ public class MyShellFinalizer implements ShellFinalizer {
 
     @Override
     public void destroy(Shell shell) {
-        ConsoleProvider console = shell.getConsoleProvider();
-        console.displayInfo("Goodbye!");
+        if (shell.isInteractive()) {
+            ConsoleProvider console = shell.getConsoleProvider();
+            console.displayInfo("Goodbye!");
+        }
     }
 
 }

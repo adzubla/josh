@@ -12,7 +12,7 @@ public class MinimalShell {
         shell.setLineParser(new LineParserImpl());
         shell.setCommandProvider(new BuiltInCommandProvider());
         shell.setConsoleProvider(new BasicConsoleProvider());
-        System.exit(shell.run().getExitCode());
+        System.exit(shell.runInteractive().getExitCode());
     }
 
 }

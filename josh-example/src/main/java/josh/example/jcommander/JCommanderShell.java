@@ -37,7 +37,7 @@ public class JCommanderShell {
         if (args.length == 0) {
             JLineConsoleProvider provider = getJLineProvider(shell);
             shell.setConsoleProvider(provider);
-            exitCode = shell.run().getExitCode();
+            exitCode = shell.runInteractive().getExitCode();
         }
         else {
             shell.setConsoleProvider(new BasicConsoleProvider());
