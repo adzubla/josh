@@ -13,7 +13,7 @@ import josh.shell.BasicConsoleProvider;
 import josh.shell.LineParserImpl;
 import josh.shell.Shell;
 import josh.shell.jline.CommandCompleter;
-import josh.shell.jline.JLineProvider;
+import josh.shell.jline.JLineConsoleProvider;
 
 /**
  * Example os a shell that has its commands implemented by JCommander
@@ -35,7 +35,7 @@ public class JCommanderShell {
 
         int exitCode;
         if (args.length == 0) {
-            JLineProvider provider = getJLineProvider(shell, commandProvider);
+            JLineConsoleProvider provider = getJLineProvider(shell);
             shell.setConsoleProvider(provider);
             exitCode = shell.run().getExitCode();
         }
@@ -46,14 +46,14 @@ public class JCommanderShell {
         System.exit(exitCode);
     }
 
-    private static JLineProvider getJLineProvider(Shell shell, CommandProvider commandProvider) {
-        JLineProvider provider = new JLineProvider();
+    private static JLineConsoleProvider getJLineProvider(Shell shell) {
+        JLineConsoleProvider provider = new JLineConsoleProvider();
         provider.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
         provider.setPromptColor(Ansi.Color.CYAN);
         provider.setInfoColor(Ansi.Color.GREEN);
         provider.setWarnColor(Ansi.Color.YELLOW);
         provider.setErrorColor(Ansi.Color.RED);
-        provider.addCompleter(new CommandCompleter(shell.getLineParser(), commandProvider));
+        provider.addCompleter(new CommandCompleter(shell.getLineParser(), shell.getCommandProvider()));
         provider.setPrompt("> ");
         return provider;
     }

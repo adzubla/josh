@@ -18,7 +18,7 @@ import josh.command.CommandProvider;
 import josh.command.HelpFormatter;
 import josh.shell.Shell;
 import josh.shell.ShellAwareCommandProvider;
-import josh.shell.jline.JLineProvider;
+import josh.shell.jline.JLineConsoleProvider;
 
 public class BuiltInCommandProvider implements CommandProvider, ShellAwareCommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(BuiltInCommandProvider.class);
@@ -187,8 +187,8 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
 
     protected int clearCommand() {
         try {
-            JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
-            jLineProvider.getConsole().clearScreen();
+            JLineConsoleProvider jLineConsoleProvider = (JLineConsoleProvider)shell.getConsoleProvider();
+            jLineConsoleProvider.getConsole().clearScreen();
             return Shell.EXIT_CODE_OK;
         }
         catch (IOException e) {

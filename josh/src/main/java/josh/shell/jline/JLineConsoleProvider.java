@@ -17,8 +17,8 @@ import josh.shell.InterruptedException;
 import static org.fusesource.jansi.Ansi.Color.DEFAULT;
 import static org.fusesource.jansi.Ansi.ansi;
 
-public class JLineProvider implements ConsoleProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(JLineProvider.class);
+public class JLineConsoleProvider implements ConsoleProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(JLineConsoleProvider.class);
 
     ConsoleReader console;
     FileHistory history;
@@ -28,7 +28,7 @@ public class JLineProvider implements ConsoleProvider {
     Ansi.Color warnColor = DEFAULT;
     Ansi.Color infoColor = DEFAULT;
 
-    public JLineProvider() {
+    public JLineConsoleProvider() {
         try {
             System.setProperty("jline.shutdownhook", "true");
             console = new ConsoleReader();

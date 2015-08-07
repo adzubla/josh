@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 
 public class BasicConsoleProvider implements ConsoleProvider {
 
-    protected String prompt = "> ";
+    protected String prompt = "$ ";
+
     protected BufferedReader reader;
 
     public BasicConsoleProvider() {

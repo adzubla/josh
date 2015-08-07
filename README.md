@@ -52,3 +52,21 @@ public class MinimalShell {
 
 }
 ```
+
+To add you own commands you must implement the interface CommandProvider.
+The josh-example module has some examples that could be used as a starting point.
+
+To use advanced line editing capabilities you should use JLineConsoleProvider that is already included in josh.
+
+```
+        JLineConsoleProvider provider = new JLineConsoleProvider();
+        provider.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
+        provider.setPromptColor(Ansi.Color.CYAN);
+        provider.setInfoColor(Ansi.Color.GREEN);
+        provider.setWarnColor(Ansi.Color.YELLOW);
+        provider.setErrorColor(Ansi.Color.RED);
+        provider.addCompleter(new CommandCompleter(shell.getLineParser(), shell.getCommandProvider()));
+        provider.setPrompt("> ");
+
+        shell.setConsoleProvider(provider);
+```
