@@ -11,7 +11,8 @@ import jline.console.ConsoleReader;
 import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
-import josh.shell.ConsoleProvider;
+import josh.shell.*;
+import josh.shell.InterruptedException;
 
 import static org.fusesource.jansi.Ansi.Color.DEFAULT;
 import static org.fusesource.jansi.Ansi.ansi;
@@ -114,7 +115,7 @@ public class JLineProvider implements ConsoleProvider {
         catch (UserInterruptException e) {
             LOG.debug("UserInterruptException (user pressed Ctrl-C)");
             print("^C");
-            return null;
+            throw new InterruptedException(e);
         }
         catch (UnsupportedOperationException e) {
             LOG.error("JLineProvider.readLine exception", e);

@@ -89,14 +89,14 @@ public class Shell {
                 if (initializer != null) {
                     initializer.initialize(this);
                 }
-                state = ShellState.STARTED;
+                setState(ShellState.STARTED);
             }
         }
     }
 
     protected void destroy() {
         synchronized (MUTEX) {
-            if (ShellState.STARTED.equals(state)) {
+            if (ShellState.STARTED.equals(state) || ShellState.INTERRUPTED.equals(state)) {
                 LOG.info("Destroying shell");
                 if (finalizer != null) {
                     finalizer.destroy(this);
@@ -104,7 +104,7 @@ public class Shell {
 
                 commandProvider.destroy();
                 consoleProvider.destroy();
-                state = ShellState.FINALIZED;
+                setState(ShellState.FINALIZED);
             }
         }
     }
@@ -112,27 +112,33 @@ public class Shell {
     protected CommandOutcome repl() {
         LOG.info("Starting repl");
         CommandOutcome outcome = new CommandOutcome();
-        while (true) {
-            consoleProvider.displayPrompt();
-            String line = consoleProvider.readLine();
-            LOG.debug("line = {}", line);
-            if (line == null) {
-                LOG.info("No more input");
-                consoleProvider.displayInfo("");
-                break;
-            }
-            if (!line.trim().equals("")) {
-                List<String> args = lineParser.getTokens(line);
-                outcome = runCommand(args);
-                if (exitOnError && outcome.isErrorState()) {
-                    LOG.info("Exiting on error");
+        try {
+            while (true) {
+                consoleProvider.displayPrompt();
+                String line = consoleProvider.readLine();
+                LOG.debug("line = {}", line);
+                if (line == null) {
+                    LOG.info("No more input");
+                    consoleProvider.displayInfo("");
                     break;
                 }
-                if (outcome.isExitRequest()) {
-                    LOG.info("Exit requested");
-                    break;
+                if (!line.trim().equals("")) {
+                    List<String> args = lineParser.getTokens(line);
+                    outcome = runCommand(args);
+                    if (exitOnError && outcome.isErrorState()) {
+                        LOG.info("Exiting on error");
+                        break;
+                    }
+                    if (outcome.isExitRequest()) {
+                        LOG.info("Exit requested");
+                        break;
+                    }
                 }
             }
+        } catch (InterruptedException e) {
+            LOG.debug(e.getMessage(), e);
+            setState(ShellState.INTERRUPTED);
+            outcome.setExitCode(Shell.EXIT_CODE_TERMINATED);
         }
         LOG.info("Ending repl");
         LOG.info("last outcome = {}", outcome);
@@ -242,9 +248,16 @@ public class Shell {
         }
     }
 
+    public void setState(ShellState state) {
+        synchronized (MUTEX) {
+            this.state = state;
+        }
+    }
+
     protected enum ShellState {
         PREPARING,
         STARTED,
+        INTERRUPTED,
         FINALIZED
     }
 
