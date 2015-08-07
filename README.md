@@ -10,8 +10,8 @@ What should be configurable:
     * from beans in Spring application context
     * embedded in my source code
 * How to parse commands and options
-    * JCommander
-    * Commons CLI
+    * JCommander (http://jcommander.org/)
+    * Commons CLI (https://commons.apache.org/proper/commons-cli/)
     * custom made options parser
 * How to display command help
     * custom formatting

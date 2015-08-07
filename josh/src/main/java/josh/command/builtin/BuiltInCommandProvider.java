@@ -139,19 +139,13 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
             sb.append(cd.getCommandDescription()).append(NEW_LINE);
             sb.append("Usage: ").append(cd.getCommandName());
             if ("date".equals(cd.getCommandName())) {
-                sb.append(" [options]").append(NEW_LINE);
-                sb.append("  Options: ").append(NEW_LINE);
-                sb.append("      Date Format [optional]").append(NEW_LINE);
+                sb.append(" [FORMAT]").append(NEW_LINE);
             }
             else if ("help".equals(cd.getCommandName())) {
-                sb.append(" [options]").append(NEW_LINE);
-                sb.append("  Options: ").append(NEW_LINE);
-                sb.append("      Command Name [optional]").append(NEW_LINE);
+                sb.append(" [COMMAND]").append(NEW_LINE);
             }
             else if ("sleep".equals(cd.getCommandName())) {
-                sb.append(" [options]").append(NEW_LINE);
-                sb.append("  Options: ").append(NEW_LINE);
-                sb.append("      Time (in milliseconds)").append(NEW_LINE);
+                sb.append(" MILLISECONDS").append(NEW_LINE);
             }
             sb.append(NEW_LINE);
             return sb.toString();
@@ -216,15 +210,16 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
 
     protected int sleepCommand(List<String> arguments) {
         try {
-            Thread.sleep(Long.valueOf(arguments.get(0)));
-        }
-        catch (InterruptedException e) {
-            // ignore
+            if (arguments.size() == 1) {
+                Thread.sleep(Long.valueOf(arguments.get(0)));
+                return Shell.EXIT_CODE_OK;
+            }
         }
         catch (Exception e) {
-            shell.getConsoleProvider().displayError("Expected parameter in milliseconds");
+            // ignore
         }
-        return Shell.EXIT_CODE_OK;
+        shell.getConsoleProvider().displayError("Expected parameter in milliseconds");
+        return Shell.EXIT_CODE_GENERAL_ERROR;
     }
 
 }
