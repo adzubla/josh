@@ -10,16 +10,22 @@ import org.slf4j.LoggerFactory;
 import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
-import josh.utils.Assert;
 
 /**
  * Controla os componentes configurados - inicializa comandos - obtem linha do console - substitui variaveis
  * (environment variables, system properties, local properties) - invoca comando - chama shutdownHook
  * <p/>
- * Exit codes http://www.tldp.org/LDP/abs/html/exitcodes.html
+ * Exit codes compatible with http://www.tldp.org/LDP/abs/html/exitcodes.html
  */
 public class Shell {
     private static final Logger LOG = LoggerFactory.getLogger(Shell.class);
+
+    public static final int EXIT_CODE_OK = 0; // No error
+    public static final int EXIT_CODE_GENERAL_ERROR = 1; // Catchall for general errors
+    public static final int EXIT_CODE_SHELL_ERROR = 2; // Misuse of shell builtins
+    public static final int EXIT_CODE_CAN_NOT_EXECUTE = 126; // Command invoked cannot execute
+    public static final int EXIT_CODE_COMMAND_NOT_FOUND = 127; // Command not found
+    public static final int EXIT_CODE_TERMINATED = 130; // Script terminated by Control-C
 
     protected boolean displayStackTraceOnError;
     protected boolean exitOnError;
@@ -37,7 +43,6 @@ public class Shell {
 
     public CommandOutcome run() {
         LOG.info("Starting shell");
-        Assert.notNull(lineParser, "Could not run the shell without a lineParser");
         initialize();
         CommandOutcome commandOutcome = repl();
         destroy();
@@ -66,8 +71,16 @@ public class Shell {
         synchronized (MUTEX) {
             if (ShellState.PREPARING.equals(state)) {
                 LOG.info("Initializing shell");
-                Assert.notNull(consoleProvider, "ConsoleProvider should never be null");
-                Assert.notNull(commandProvider, "CommandProvider should never be null");
+
+                if (lineParser == null) {
+                    throw new IllegalStateException("Could not run the shell without a lineParser");
+                }
+                if (consoleProvider == null) {
+                    throw new IllegalStateException("ConsoleProvider should never be null");
+                }
+                if (commandProvider == null) {
+                    throw new IllegalStateException("CommandProvider should never be null");
+                }
 
                 registerShutdownHook();
                 consoleProvider.initialize();
@@ -131,14 +144,14 @@ public class Shell {
         try {
             outcome = commandProvider.execute(args);
             LOG.debug("outcome = {}", outcome);
-            if (outcome.getExitCode() != 0) {
+            if (outcome.getExitCode() != EXIT_CODE_OK) {
                 consoleProvider.displayError("Error executing command. Exit code " + outcome.getExitCode());
             }
         }
         catch (CommandNotFound e) {
             LOG.error("Command {} not found.", e.getName());
             consoleProvider.displayWarning("Command " + e.getName() + " not found.");
-            outcome.setExitCode(127);
+            outcome.setExitCode(EXIT_CODE_COMMAND_NOT_FOUND);
         }
         catch (RuntimeException e) {
             LOG.error("Error executing command", e);
@@ -148,7 +161,7 @@ public class Shell {
                 consoleProvider.displayError(sw.toString());
             }
             consoleProvider.displayError("Error executing command: " + e.getMessage());
-            outcome.setExitCode(126);
+            outcome.setExitCode(EXIT_CODE_CAN_NOT_EXECUTE);
         }
         return outcome;
     }

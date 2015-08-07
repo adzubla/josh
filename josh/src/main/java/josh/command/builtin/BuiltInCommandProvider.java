@@ -23,9 +23,6 @@ import josh.shell.jline.JLineProvider;
 public class BuiltInCommandProvider implements CommandProvider, ShellAwareCommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(BuiltInCommandProvider.class);
 
-    protected static final int EXIT_CODE_OK = 0;
-    protected static final int EXIT_CODE_ERROR = 1;
-
     protected Map<String, CommandDescriptor> commands;
 
     protected Shell shell;
@@ -167,7 +164,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
 
     protected int pwdCommand() {
         System.out.println(System.getProperty("user.dir"));
-        return EXIT_CODE_OK;
+        return Shell.EXIT_CODE_OK;
     }
 
     protected int propertiesCommand() {
@@ -176,7 +173,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
             String value = properties.getProperty(key);
             System.out.println(key + "=" + value);
         }
-        return EXIT_CODE_OK;
+        return Shell.EXIT_CODE_OK;
     }
 
     protected int envCommand() {
@@ -185,18 +182,18 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
             String value = env.get(key);
             System.out.println(key + "=" + value);
         }
-        return EXIT_CODE_OK;
+        return Shell.EXIT_CODE_OK;
     }
 
     protected int clearCommand() {
         try {
             JLineProvider jLineProvider = (JLineProvider)shell.getConsoleProvider();
             jLineProvider.getConsole().clearScreen();
-            return EXIT_CODE_OK;
+            return Shell.EXIT_CODE_OK;
         }
         catch (IOException e) {
             LOG.error("clear errror", e);
-            return EXIT_CODE_ERROR;
+            return Shell.EXIT_CODE_GENERAL_ERROR;
         }
     }
 
@@ -209,12 +206,12 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         }
         else if (!arguments.isEmpty()) {
             System.err.println("Expected date format");
-            return EXIT_CODE_ERROR;
+            return Shell.EXIT_CODE_GENERAL_ERROR;
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         System.out.println(sdf.format(currentDate));
-        return EXIT_CODE_OK;
+        return Shell.EXIT_CODE_OK;
     }
 
     protected int sleepCommand(List<String> arguments) {
@@ -227,7 +224,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         catch (Exception e) {
             shell.getConsoleProvider().displayError("Expected parameter in milliseconds");
         }
-        return EXIT_CODE_OK;
+        return Shell.EXIT_CODE_OK;
     }
 
 }
