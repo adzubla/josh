@@ -54,7 +54,7 @@ public class HelpCommand {
         return 0;
     }
 
-    private List<CommandDescriptor> getCommandsToShow(List<String> arguments, Map<String, CommandDescriptor> commands) {
+    protected List<CommandDescriptor> getCommandsToShow(List<String> arguments, Map<String, CommandDescriptor> commands) {
         List<CommandDescriptor> commandsToShow = new ArrayList<CommandDescriptor>();
         if (arguments.size() == 0) {
             commandsToShow = new ArrayList<CommandDescriptor>(commands.values());
@@ -70,7 +70,7 @@ public class HelpCommand {
         return commandsToShow;
     }
 
-    private void showSimpleHelpMessage(ConsoleProvider consoleProvider, CommandDescriptor commandDescriptor) {
+    protected void showSimpleHelpMessage(ConsoleProvider consoleProvider, CommandDescriptor commandDescriptor) {
         consoleProvider.displayInfo(
                 commandDescriptor.getCommandName() + " - " + commandDescriptor.getCommandDescription());
     }

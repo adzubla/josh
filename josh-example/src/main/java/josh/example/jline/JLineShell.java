@@ -1,4 +1,4 @@
-package josh.example.simple;
+package josh.example.jline;
 
 import java.util.Arrays;
 
@@ -19,9 +19,9 @@ import josh.shell.jline.JLineProvider;
  * A simple example shell that uses JLine, built in commands provided by josh, and some example commands for testing.
  * <p/>
  * If the main method is invoked with no arguments, the prompt is shown and the user can type commands.
- * If some argument is passed, they will be trated as a command to be executed and the program exits.
+ * If some argument is passed, they will be treated as a command to be executed and the program exits.
  */
-public class MyShell {
+public class JLineShell {
 
     public static void main(String[] args) {
 

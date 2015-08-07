@@ -103,7 +103,7 @@ public class CommandCompleter implements Completer {
         return cursor;
     }
 
-    private Completer getCompleter(Map<String, Class> options, Class type) {
+    protected Completer getCompleter(Map<String, Class> options, Class type) {
         Completer completer;
         if (type == null) {
             completer = new ArgumentCompleter(new StringsCompleter(options.keySet()));

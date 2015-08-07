@@ -53,7 +53,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         }
     }
 
-    private void addDescriptor(String name, String description) {
+    protected void addDescriptor(String name, String description) {
         CommandDescriptor descriptor = new CommandDescriptor();
         descriptor.setCommandName(name);
         descriptor.setCommandDescription(description);
@@ -97,7 +97,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         return invokeCommand(commandDescriptor, arguments);
     }
 
-    private CommandOutcome invokeCommand(CommandDescriptor commandDescriptor, List<String> arguments) {
+    protected CommandOutcome invokeCommand(CommandDescriptor commandDescriptor, List<String> arguments) {
         LOG.debug("invokeCommand {}, {}", commandDescriptor.getCommandName(), arguments);
 
         CommandOutcome commandOutcome = new CommandOutcome();
@@ -129,7 +129,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         return commandOutcome;
     }
 
-    private static class BuiltInHelpFormatter implements HelpFormatter {
+    protected static class BuiltInHelpFormatter implements HelpFormatter {
 
         private String NEW_LINE = "\n";
 

@@ -45,7 +45,7 @@ public class Shell {
         LOG.info("Starting shell");
         initialize();
         CommandOutcome commandOutcome = repl();
-        destroy();
+        destroy(false);
         return commandOutcome;
     }
 
@@ -53,16 +53,16 @@ public class Shell {
         LOG.info("Executing command in shell");
         initialize();
         CommandOutcome commandOutcome = runCommand(args);
-        destroy();
+        destroy(false);
         return commandOutcome;
     }
 
-    private void registerShutdownHook() {
+    protected void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 LOG.info("Ending shell");
-                Shell.this.destroy();
+                Shell.this.destroy(true);
             }
         });
     }
@@ -94,10 +94,20 @@ public class Shell {
         }
     }
 
-    protected void destroy() {
+    protected void destroy(boolean shutdownHook) {
         synchronized (MUTEX) {
             if (ShellState.STARTED.equals(state) || ShellState.INTERRUPTED.equals(state)) {
                 LOG.info("Destroying shell");
+
+                if (shutdownHook) {
+                    try {
+                        consoleProvider.displayWarning("[Interrupted]");
+                    }
+                    catch (Exception e) {
+                        LOG.warn("Error", e);
+                    }
+                }
+
                 if (finalizer != null) {
                     finalizer.destroy(this);
                 }
@@ -135,7 +145,8 @@ public class Shell {
                     }
                 }
             }
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             LOG.debug(e.getMessage(), e);
             setState(ShellState.INTERRUPTED);
             outcome.setExitCode(Shell.EXIT_CODE_TERMINATED);
@@ -145,7 +156,7 @@ public class Shell {
         return outcome;
     }
 
-    private CommandOutcome runCommand(List<String> args) {
+    protected CommandOutcome runCommand(List<String> args) {
         CommandOutcome outcome = new CommandOutcome();
         try {
             outcome = commandProvider.execute(args);

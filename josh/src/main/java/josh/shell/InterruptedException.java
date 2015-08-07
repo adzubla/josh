@@ -4,6 +4,7 @@ package josh.shell;
  * Exception lancada quando ocorrer uma interrupção externa no programa
  */
 public class InterruptedException extends RuntimeException {
+
     public InterruptedException() {
     }
 
@@ -18,4 +19,5 @@ public class InterruptedException extends RuntimeException {
     public InterruptedException(Throwable cause) {
         super(cause);
     }
+
 }

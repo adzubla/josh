@@ -64,7 +64,7 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
         LOG.debug("commandDescriptors = {}", commandDescriptors);
     }
 
-    private Class getTypeForParameter(Parameterized parameterized, ParameterDescription parameterDescription) {
+    protected Class getTypeForParameter(Parameterized parameterized, ParameterDescription parameterDescription) {
         Class type = parameterized.getType();
         if (parameterDescription.getParameter().arity() == 0) {
             // If the parameter has a 0 arity, there is no class to convert
@@ -139,7 +139,7 @@ public abstract class AbstractJCommanderProvider implements CommandProvider {
         return commands.getCommands().get(commandName);
     }
 
-    private void finalizeActualCommand() {
+    protected void finalizeActualCommand() {
         if (this.actualCommand != null && this.actualCommand instanceof ExecutableWithLifecycle) {
             ((ExecutableWithLifecycle)this.actualCommand).finalizeCommand();
         }

@@ -1,4 +1,4 @@
-package josh.example.simple;
+package josh.example.jline;
 
 import java.util.List;
 
