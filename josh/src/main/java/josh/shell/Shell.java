@@ -50,6 +50,9 @@ public class Shell {
     public CommandOutcome runInteractive() {
         LOG.info("Starting shell");
         interactive = true;
+        if (lineParser == null) {
+            throw new IllegalStateException("Can not run the shell without a LineParser");
+        }
         initialize();
         CommandOutcome commandOutcome = repl();
         destroy(false);
@@ -79,9 +82,6 @@ public class Shell {
             if (ShellState.PREPARING.equals(state)) {
                 LOG.info("Initializing shell");
 
-                if (lineParser == null) {
-                    throw new IllegalStateException("Can not run the shell without a LineParser");
-                }
                 if (consoleProvider == null) {
                     throw new IllegalStateException("Can not run the shell without a ConsoleProvider");
                 }
