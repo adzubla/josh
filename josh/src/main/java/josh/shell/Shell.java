@@ -80,13 +80,13 @@ public class Shell {
                 LOG.info("Initializing shell");
 
                 if (lineParser == null) {
-                    throw new IllegalStateException("Could not run the shell without a lineParser");
+                    throw new IllegalStateException("Can not run the shell without a LineParser");
                 }
                 if (consoleProvider == null) {
-                    throw new IllegalStateException("ConsoleProvider should never be null");
+                    throw new IllegalStateException("Can not run the shell without a ConsoleProvider");
                 }
                 if (commandProvider == null) {
-                    throw new IllegalStateException("CommandProvider should never be null");
+                    throw new IllegalStateException("Can not run the shell without a CommandProvider");
                 }
 
                 registerShutdownHook();
