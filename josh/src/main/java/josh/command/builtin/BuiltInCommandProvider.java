@@ -20,6 +20,9 @@ import josh.shell.Shell;
 import josh.shell.ShellAwareCommandProvider;
 import josh.shell.jline.JLineConsoleProvider;
 
+/**
+ * Implements some simple generic commands.
+ */
 public class BuiltInCommandProvider implements CommandProvider, ShellAwareCommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(BuiltInCommandProvider.class);
 

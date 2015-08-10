@@ -18,6 +18,9 @@ import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
 import josh.command.HelpFormatter;
 
+/**
+ * Abstract CommandProvider that grab commands options using JCommander (http://jcommander.org/)
+ */
 public abstract class AbstractJCommanderProvider implements CommandProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractJCommanderProvider.class);
 

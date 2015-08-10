@@ -3,7 +3,7 @@ package josh.shell;
 import java.util.List;
 
 /**
- * Faz o parse de uma linha de comando
+ * Parse a command line
  */
 public interface LineParser {
 

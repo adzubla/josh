@@ -4,12 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Carrega os comandos disponíveis
- * - embedded
- * - contexto Spring
- * - diretório com .jar
- * - diretório com .py
- * - diretório com .groovy
+ * Interface used to find and load commands that will be used in the Shell.
  */
 public interface CommandProvider {
 

@@ -20,13 +20,13 @@ import static org.fusesource.jansi.Ansi.ansi;
 public class JLineConsoleProvider implements ConsoleProvider {
     private static final Logger LOG = LoggerFactory.getLogger(JLineConsoleProvider.class);
 
-    ConsoleReader console;
-    FileHistory history;
+    protected ConsoleReader console;
+    protected FileHistory history;
 
-    Ansi.Color promptColor = DEFAULT;
-    Ansi.Color errorColor = DEFAULT;
-    Ansi.Color warnColor = DEFAULT;
-    Ansi.Color infoColor = DEFAULT;
+    protected Ansi.Color promptColor = DEFAULT;
+    protected Ansi.Color errorColor = DEFAULT;
+    protected Ansi.Color warnColor = DEFAULT;
+    protected Ansi.Color infoColor = DEFAULT;
 
     public JLineConsoleProvider() {
         try {
@@ -49,8 +49,6 @@ public class JLineConsoleProvider implements ConsoleProvider {
     public void destroy() {
         LOG.debug("destroy");
         try {
-            console.flush();
-            console.shutdown();
             if (history != null) {
                 history.flush();
             }
@@ -58,6 +56,13 @@ public class JLineConsoleProvider implements ConsoleProvider {
         catch (IOException e) {
             LOG.error("history flush error", e);
         }
+        try {
+            console.flush();
+        }
+        catch (IOException e) {
+            LOG.error("console flush error", e);
+        }
+        console.shutdown();
     }
 
     @Override

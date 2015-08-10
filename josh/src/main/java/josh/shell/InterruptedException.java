@@ -1,7 +1,7 @@
 package josh.shell;
 
 /**
- * Exception lancada quando ocorrer uma interrupção externa no programa
+ * Exception thrown when the program is interrupted by an external signal like Ctrl-C
  */
 public class InterruptedException extends RuntimeException {
 

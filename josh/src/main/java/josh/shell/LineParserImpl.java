@@ -3,6 +3,10 @@ package josh.shell;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Parse a command line into tokens separated by white spaces, and using double quotes to build tokens that can have
+ * spaces inside.
+ */
 public class LineParserImpl implements LineParser {
 
     protected static final char SPACE_CHAR = ' ';

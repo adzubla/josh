@@ -30,14 +30,9 @@ public class CommandCompleter implements Completer {
     }
 
     public int complete(String buffer, int cursor, List candidates) {
-        StringsCompleter commandNameCompleter = new StringsCompleter(commandProvider.getCommands().keySet());
+        LOG.debug("cursor = {} buffer = [{}]", cursor, buffer);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("---------------------------------------------------------------");
-            LOG.debug("buffer = [{}]", buffer);
-            String padding = "                                                                                           ".substring(0, cursor + 1);
-            LOG.debug("cursor = {}^ {}", padding, cursor);
-        }
+        StringsCompleter commandNameCompleter = new StringsCompleter(commandProvider.getCommands().keySet());
 
         while (buffer.startsWith(" ")) {
             buffer = buffer.replaceFirst("^ ", "");
@@ -90,7 +85,6 @@ public class CommandCompleter implements Completer {
                         int complete = completer.complete(tokenUnderCursor, 0, candidates);
                         LOG.debug("candidates = {}", candidates);
                         LOG.debug("complete = {}", complete);
-                        LOG.debug("start+complete = {}", rangeUnderCursor.start + complete);
                         return rangeUnderCursor.start + complete;
                     }
                 }

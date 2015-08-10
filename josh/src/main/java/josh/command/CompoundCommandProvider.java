@@ -11,7 +11,7 @@ import josh.shell.Shell;
 import josh.shell.ShellAwareCommandProvider;
 
 /**
- * Permite juntar comandos de várias fontes
+ * Aggregate commands from different sources in one CommandProvider
  */
 public class CompoundCommandProvider implements CommandProvider, ShellAwareCommandProvider {
 

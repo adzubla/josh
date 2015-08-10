@@ -5,7 +5,7 @@ import com.beust.jcommander.Parameters;
 import josh.command.CommandOutcome;
 
 /**
- * Interface to mark a JCommander command <br /> The class implementing this interface must also use the JCommander
+ * Interface to mark a JCommander command. The class implementing this interface must also use the JCommander
  * {@link Parameters} annotation and supply the {@link Parameters#commandNames()} option
  *
  * @see Parameters

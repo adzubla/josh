@@ -23,5 +23,10 @@ public interface ConsoleProvider {
 
     void displayInfo(String message);
 
+    void println(CharSequence charSequence);
+
+    void print(CharSequence charSequence);
+
     String readLine();
+
 }

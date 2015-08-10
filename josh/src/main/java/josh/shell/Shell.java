@@ -12,10 +12,10 @@ import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
 
 /**
- * Controla os componentes configurados - inicializa comandos - obtem linha do console - substitui variaveis
- * (environment variables, system properties, local properties) - invoca comando - chama shutdownHook
+ * The Shell controls the interaction between ConsoleProvider and CommandProvider, and the life cycle of the
+ * evaluation loop.
  * <p/>
- * Exit codes compatible with http://www.tldp.org/LDP/abs/html/exitcodes.html
+ * Exit codes are compatible with http://www.tldp.org/LDP/abs/html/exitcodes.html
  */
 public class Shell {
     private static final Logger LOG = LoggerFactory.getLogger(Shell.class);

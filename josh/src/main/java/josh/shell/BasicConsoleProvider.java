@@ -48,6 +48,16 @@ public class BasicConsoleProvider implements ConsoleProvider {
     }
 
     @Override
+    public void println(CharSequence charSequence) {
+        System.out.println(charSequence);
+    }
+
+    @Override
+    public void print(CharSequence charSequence) {
+        System.out.print(charSequence);
+    }
+
+    @Override
     public String readLine() {
         try {
             return reader.readLine();

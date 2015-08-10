@@ -11,6 +11,9 @@ import josh.command.HelpFormatter;
 import josh.shell.ConsoleProvider;
 import josh.shell.Shell;
 
+/**
+ * Help command the lists a description of all available commands.
+ */
 public class HelpCommand {
 
     protected Shell shell;

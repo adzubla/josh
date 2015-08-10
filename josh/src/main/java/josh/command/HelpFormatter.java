@@ -1,7 +1,7 @@
 package josh.command;
 
 /**
- * Faz a formatação do help de um comando
+ * Format help message of a command.
  */
 public interface HelpFormatter {
 
