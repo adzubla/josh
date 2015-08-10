@@ -2,7 +2,10 @@ package josh.shell;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +169,7 @@ public class Shell {
     protected CommandOutcome runCommand(List<String> args) {
         CommandOutcome outcome = new CommandOutcome();
         try {
+            args = expandVariables(args);
             outcome = commandProvider.execute(args);
             LOG.debug("outcome = {}", outcome);
             if (outcome.getExitCode() != EXIT_CODE_OK) {
@@ -188,6 +192,34 @@ public class Shell {
             outcome.setExitCode(EXIT_CODE_CAN_NOT_EXECUTE);
         }
         return outcome;
+    }
+
+    protected List<String> expandVariables(List<String> args) {
+        List<String> expandedArgs = new ArrayList<String>();
+
+        Pattern pattern = Pattern.compile("\\$\\{([^}]*)}");
+        for (String arg : args) {
+            Matcher matcher = pattern.matcher(arg);
+            while (matcher.find()) {
+                String propertyKey = matcher.group(1);
+                String value = getPropertyValue(propertyKey);
+
+                if (value == null) {
+                    value = "";
+                }
+                arg = arg.replaceAll("\\$\\{" + propertyKey + "\\}", value);
+            }
+            expandedArgs.add(arg);
+        }
+        return expandedArgs;
+    }
+
+    protected String getPropertyValue(String key) {
+        String value = System.getProperty(key);
+        if (value == null) {
+            value = System.getenv(key);
+        }
+        return value;
     }
 
     public boolean isDisplayStackTraceOnError() {

@@ -42,6 +42,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
 
         addDescriptor("date", "Display current date.");
         addDescriptor("props", "Display Java system properties.");
+        addDescriptor("setp", "Set Java system property.");
         addDescriptor("env", "Display environment variables.");
         addDescriptor("pwd", "Display working directory.");
         addDescriptor("help", "Display commands.");
@@ -113,6 +114,9 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         else if ("props".equals(commandDescriptor.getCommandName())) {
             commandOutcome.setExitCode(propertiesCommand());
         }
+        else if ("setp".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(setpCommand(arguments));
+        }
         else if ("pwd".equals(commandDescriptor.getCommandName())) {
             commandOutcome.setExitCode(pwdCommand());
         }
@@ -170,6 +174,18 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
             String value = properties.getProperty(key);
             System.out.println(key + "=" + value);
         }
+        return Shell.EXIT_CODE_OK;
+    }
+
+    protected int setpCommand(List<String> arguments) {
+        if (arguments.size() != 2) {
+            System.err.println("Expected the key and value for the property");
+            return Shell.EXIT_CODE_GENERAL_ERROR;
+        }
+
+        String key = arguments.get(0);
+        String value = arguments.get(1);
+        System.setProperty(key, value);
         return Shell.EXIT_CODE_OK;
     }
 
