@@ -3,8 +3,6 @@ package josh.example.jcommander;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -12,7 +10,6 @@ import josh.command.CommandOutcome;
 import josh.command.jcommander.Executable;
 import josh.shell.ConsoleProvider;
 
-@Component
 @Parameters(commandNames = "prompt", commandDescription = "Changes the Prompt Message")
 public class PromptCommand implements Executable {
 

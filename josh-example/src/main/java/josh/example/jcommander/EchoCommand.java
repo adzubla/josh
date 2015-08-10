@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -13,7 +11,6 @@ import josh.command.CommandOutcome;
 import josh.command.jcommander.Executable;
 import josh.example.YesNo;
 
-@Component
 @Parameters(commandNames = "echo", commandDescription = "Echoes a message")
 public class EchoCommand implements Executable {
 
