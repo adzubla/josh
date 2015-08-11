@@ -136,7 +136,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         return commandOutcome;
     }
 
-    protected static class BuiltInHelpFormatter implements HelpFormatter {
+    protected class BuiltInHelpFormatter implements HelpFormatter {
 
         private String NEW_LINE = "\n";
 
