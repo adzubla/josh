@@ -77,3 +77,7 @@ that is already included in josh.
 
         shell.setConsoleProvider(provider);
 ```
+
+# Warning
+
+This framework was tested on Linux. If you run it on Windows and find a bug (or not!) let us know.
