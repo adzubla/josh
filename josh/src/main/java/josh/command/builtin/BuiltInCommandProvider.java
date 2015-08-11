@@ -154,6 +154,9 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
             else if ("sleep".equals(cd.getCommandName())) {
                 sb.append(" MILLISECONDS").append(NEW_LINE);
             }
+            else if ("setp".equals(cd.getCommandName())) {
+                sb.append(" NAME VALUE").append(NEW_LINE);
+            }
             sb.append(NEW_LINE);
             return sb.toString();
         }

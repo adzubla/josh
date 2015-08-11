@@ -28,7 +28,7 @@ public class PromptCommand implements Executable {
             consoleProvider.setPrompt(arguments.get(0));
         }
         else {
-            consoleProvider.displayWarning("Plear provide a message to the new prompt");
+            consoleProvider.displayWarning("Please provide a message to the new prompt");
         }
         return new CommandOutcome(0);
     }
