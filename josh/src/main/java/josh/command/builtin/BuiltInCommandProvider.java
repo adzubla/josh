@@ -1,7 +1,14 @@
 package josh.command.builtin;
 
 import java.io.IOException;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +55,11 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         addDescriptor("help", "Display commands.");
         addDescriptor("clear", "Clear screen.");
         addDescriptor("sleep", "Sleep in milliseconds.");
+        addDescriptor("os", "Display operating system information.");
+        addDescriptor("jvm", "Display JVM information.");
+        addDescriptor("mem", "Display JVM memory information.");
+        addDescriptor("pools", "Display JVM memory pools.");
+        addDescriptor("gc", "Display JVM garbage collector information.");
         addDescriptor("exit", "Exit shell.");
 
         LOG.debug("commands = {}", commands);
@@ -125,6 +137,21 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         }
         else if ("sleep".equals(commandDescriptor.getCommandName())) {
             commandOutcome.setExitCode(sleepCommand(arguments));
+        }
+        else if ("os".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(osCommand());
+        }
+        else if ("jvm".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(jvmCommand());
+        }
+        else if ("mem".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(memCommand());
+        }
+        else if ("pools".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(poolsCommand());
+        }
+        else if ("gc".equals(commandDescriptor.getCommandName())) {
+            commandOutcome.setExitCode(gcCommand());
         }
         else if ("help".equals(commandDescriptor.getCommandName())) {
             HelpCommand helpCommand = new HelpCommand(shell);
@@ -242,6 +269,109 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
         }
         shell.getConsoleProvider().displayError("Expected parameter in milliseconds");
         return Shell.EXIT_CODE_GENERAL_ERROR;
+    }
+
+    protected int osCommand() {
+        OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+        if (operatingSystemMXBean == null) {
+            System.out.println("Couldn't get the MXBean!");
+            return Shell.EXIT_CODE_GENERAL_ERROR;
+        }
+
+        System.out.println("Name: " + operatingSystemMXBean.getName());
+        System.out.println("Version: " + operatingSystemMXBean.getVersion());
+        System.out.println("Architecture: " + operatingSystemMXBean.getArch());
+        System.out.println("Processors: " + operatingSystemMXBean.getAvailableProcessors());
+        System.out.println("System load average for the last minute: " + operatingSystemMXBean.getSystemLoadAverage());
+        return Shell.EXIT_CODE_OK;
+    }
+
+    protected int jvmCommand() {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        if (runtimeMXBean == null) {
+            System.out.println("Couldn't get the MXBean!");
+            return Shell.EXIT_CODE_GENERAL_ERROR;
+        }
+
+        System.out.println("Name: " + runtimeMXBean.getName());
+        System.out.println("Vm Name: " + runtimeMXBean.getVmName());
+        System.out.println("Vm Vendor: " + runtimeMXBean.getVmVendor());
+        System.out.println("Vm Version: " + runtimeMXBean.getVmVersion());
+        System.out.println("Start time in milliseconds: " + runtimeMXBean.getStartTime());
+        System.out.println("Uptime in milliseconds: " + runtimeMXBean.getUptime());
+        System.out.println("Input arguments: " + runtimeMXBean.getInputArguments());
+        System.out.println("Boot class path: " + runtimeMXBean.getBootClassPath());
+        System.out.println("Library path: " + runtimeMXBean.getLibraryPath());
+        System.out.println("Class path: " + runtimeMXBean.getClassPath());
+        return Shell.EXIT_CODE_OK;
+    }
+
+    protected int memCommand() {
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        if (memoryMXBean == null) {
+            System.out.println("Couldn't get the MXBean!");
+            return Shell.EXIT_CODE_GENERAL_ERROR;
+        }
+
+        System.out.println("Memory usage of the heap: " + memoryMXBean.getHeapMemoryUsage());
+        System.out.println("Memory usage of non-heap memory: " + memoryMXBean.getNonHeapMemoryUsage());
+        System.out.println("Objects for which finalization is pending: " + memoryMXBean.getObjectPendingFinalizationCount());
+
+        return Shell.EXIT_CODE_OK;
+    }
+
+    protected int poolsCommand() {
+        List<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
+        if (memoryPoolMXBeans == null) {
+            System.out.println("Couldn't get the MXBean!");
+            return Shell.EXIT_CODE_GENERAL_ERROR;
+        }
+
+        for (MemoryPoolMXBean memoryPoolMXBean : memoryPoolMXBeans) {
+            System.out.println("Memory pool: " + memoryPoolMXBean.getName());
+            System.out.println("  MemoryManagerNames: " + Arrays.toString(memoryPoolMXBean.getMemoryManagerNames()));
+            System.out.println("  isValid: " + memoryPoolMXBean.isValid());
+            System.out.println("  Type: " + memoryPoolMXBean.getType());
+            System.out.println("  PeakUsage: " + memoryPoolMXBean.getPeakUsage());
+            System.out.println("  Usage: " + memoryPoolMXBean.getUsage());
+            if (memoryPoolMXBean.isUsageThresholdSupported()) {
+                System.out.println("  UsageThreshold: " + memoryPoolMXBean.getUsageThreshold());
+                System.out.println("  UsageThresholdCount: " + memoryPoolMXBean.getUsageThresholdCount());
+                System.out.println("  isUsageThresholdExceeded: " + memoryPoolMXBean.isUsageThresholdExceeded());
+            }
+            System.out.println("  CollectionUsage: " + memoryPoolMXBean.getCollectionUsage());
+            if (memoryPoolMXBean.isCollectionUsageThresholdSupported()) {
+                System.out.println("  CollectionUsageThreshold: " + memoryPoolMXBean.getCollectionUsageThreshold());
+                System.out.println("  CollectionUsageThresholdCount: " + memoryPoolMXBean.getCollectionUsageThresholdCount());
+                System.out.println("  isCollectionUsageThresholdExceeded: " + memoryPoolMXBean.isCollectionUsageThresholdExceeded());
+            }
+        }
+
+        return Shell.EXIT_CODE_OK;
+    }
+
+    protected int gcCommand() {
+        List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
+        if (garbageCollectorMXBeans == null) {
+            System.out.println("Couldn't get the MXBean!");
+            return Shell.EXIT_CODE_GENERAL_ERROR;
+        }
+
+        for (GarbageCollectorMXBean gc : garbageCollectorMXBeans) {
+            System.out.println("Memory manager name: " + gc.getName());
+            System.out.println("  Collection count: " + gc.getCollectionCount());
+            System.out.println("  Collection time: " + gc.getCollectionTime());
+
+            System.out.print("  Memory pools:");
+
+            String[] memoryPoolNames = gc.getMemoryPoolNames();
+            for (String memoryPoolName : memoryPoolNames) {
+                System.out.print(" [" + memoryPoolName + "]");
+            }
+            System.out.println("\n");
+        }
+
+        return Shell.EXIT_CODE_OK;
     }
 
 }
