@@ -1,5 +1,11 @@
 package josh.example;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Map;
 
@@ -18,12 +24,6 @@ import josh.command.CommandNotFound;
 import josh.command.CommandOutcome;
 import josh.command.jcommander.Executable;
 import josh.example.spring.SpringCommandProvider;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class SpringCommandProviderTest {
 

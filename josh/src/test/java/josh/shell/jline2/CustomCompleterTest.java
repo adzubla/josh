@@ -1,5 +1,9 @@
 package josh.shell.jline2;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +18,6 @@ import josh.command.CommandOutcome;
 import josh.command.CommandProvider;
 import josh.command.HelpFormatter;
 import josh.shell.LineParserImpl;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
 
 public class CustomCompleterTest {
 

@@ -1,15 +1,15 @@
 package josh.shell;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 public class ShellTest {
 
@@ -49,7 +49,6 @@ public class ShellTest {
 
     @Test
     public void testExpandVariables_UsingTheSamePropertyOnManyVariables() throws Exception {
-        Properties properties = new Properties();
         when(shell.getPropertyValue("NAME")).thenReturn("NAME_01");
 
         List<String> expandedArgs = shell.expandVariables(Arrays.asList("--name", "${NAME}", "--company", "${NAME}"));

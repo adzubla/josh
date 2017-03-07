@@ -1,5 +1,8 @@
 package josh.shell.jline2;
 
+import static org.fusesource.jansi.Ansi.Color.DEFAULT;
+import static org.fusesource.jansi.Ansi.ansi;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -13,9 +16,6 @@ import jline.console.completer.Completer;
 import jline.console.history.FileHistory;
 import josh.shell.ConsoleProvider;
 import josh.shell.InterruptedException;
-
-import static org.fusesource.jansi.Ansi.Color.DEFAULT;
-import static org.fusesource.jansi.Ansi.ansi;
 
 public class JLine2ConsoleProvider implements ConsoleProvider {
     private static final Logger LOG = LoggerFactory.getLogger(JLine2ConsoleProvider.class);

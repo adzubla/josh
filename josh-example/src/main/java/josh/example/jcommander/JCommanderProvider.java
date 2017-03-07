@@ -25,7 +25,8 @@ public class JCommanderProvider extends AbstractJCommanderProvider implements Sh
     protected Executable getNewCommand(Class<? extends Executable> bean) throws CommandNotFound {
         if (EchoCommand.class.isAssignableFrom(bean)) {
             return new EchoCommand();
-        } else if (PromptCommand.class.isAssignableFrom(bean)) {
+        }
+        else if (PromptCommand.class.isAssignableFrom(bean)) {
             return new PromptCommand(shell.getConsoleProvider());
         }
         throw new CommandNotFound(bean.getName());
