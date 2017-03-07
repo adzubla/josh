@@ -1,4 +1,4 @@
-package josh.example.jline;
+package josh.example.jline2;
 
 import java.util.Arrays;
 
@@ -12,8 +12,8 @@ import josh.example.MyShellInitializer;
 import josh.shell.BasicConsoleProvider;
 import josh.shell.LineParserImpl;
 import josh.shell.Shell;
-import josh.shell.jline.CommandCompleter;
-import josh.shell.jline.JLineConsoleProvider;
+import josh.shell.jline2.CommandCompleter;
+import josh.shell.jline2.JLine2ConsoleProvider;
 
 /**
  * A simple example shell that uses JLine, built in commands provided by josh, and some example commands for testing.
@@ -21,7 +21,7 @@ import josh.shell.jline.JLineConsoleProvider;
  * If the main method is invoked with no arguments, the prompt is shown and the user can type commands.
  * If some argument is passed, they will be treated as a command to be executed and the program exits.
  */
-public class JLineShell {
+public class JLine2Shell {
 
     public static void main(String[] args) {
 
@@ -38,7 +38,7 @@ public class JLineShell {
 
         int exitCode;
         if (args.length == 0) {
-            JLineConsoleProvider provider = getJLineProvider(shell);
+            JLine2ConsoleProvider provider = getJLineProvider(shell);
             shell.setConsoleProvider(provider);
             exitCode = shell.runInteractive().getExitCode();
         }
@@ -49,8 +49,8 @@ public class JLineShell {
         System.exit(exitCode);
     }
 
-    private static JLineConsoleProvider getJLineProvider(Shell shell) {
-        JLineConsoleProvider provider = new JLineConsoleProvider();
+    private static JLine2ConsoleProvider getJLineProvider(Shell shell) {
+        JLine2ConsoleProvider provider = new JLine2ConsoleProvider();
         provider.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
         provider.setPromptColor(Ansi.Color.CYAN);
         provider.setInfoColor(Ansi.Color.GREEN);

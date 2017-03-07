@@ -25,7 +25,7 @@ import josh.command.CommandProvider;
 import josh.command.HelpFormatter;
 import josh.shell.Shell;
 import josh.shell.ShellAwareCommandProvider;
-import josh.shell.jline.JLineConsoleProvider;
+import josh.shell.jline2.JLine2ConsoleProvider;
 
 /**
  * Implements some simple generic commands.
@@ -230,7 +230,7 @@ public class BuiltInCommandProvider implements CommandProvider, ShellAwareComman
 
     protected int clearCommand() {
         try {
-            JLineConsoleProvider jLineConsoleProvider = (JLineConsoleProvider)shell.getConsoleProvider();
+            JLine2ConsoleProvider jLineConsoleProvider = (JLine2ConsoleProvider)shell.getConsoleProvider();
             jLineConsoleProvider.getConsole().clearScreen();
             return Shell.EXIT_CODE_OK;
         }

@@ -1,4 +1,4 @@
-package josh.example.jline;
+package josh.example.jline2;
 
 import java.io.File;
 import java.util.HashMap;

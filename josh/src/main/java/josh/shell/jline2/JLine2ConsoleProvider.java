@@ -1,4 +1,4 @@
-package josh.shell.jline;
+package josh.shell.jline2;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import josh.shell.InterruptedException;
 import static org.fusesource.jansi.Ansi.Color.DEFAULT;
 import static org.fusesource.jansi.Ansi.ansi;
 
-public class JLineConsoleProvider implements ConsoleProvider {
-    private static final Logger LOG = LoggerFactory.getLogger(JLineConsoleProvider.class);
+public class JLine2ConsoleProvider implements ConsoleProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(JLine2ConsoleProvider.class);
 
     protected ConsoleReader console;
     protected FileHistory history;
@@ -28,9 +28,9 @@ public class JLineConsoleProvider implements ConsoleProvider {
     protected Ansi.Color warnColor = DEFAULT;
     protected Ansi.Color infoColor = DEFAULT;
 
-    public JLineConsoleProvider() {
+    public JLine2ConsoleProvider() {
         try {
-            System.setProperty("jline.shutdownhook", "true");
+            System.setProperty("jline2.shutdownhook", "true");
             console = new ConsoleReader();
             console.setExpandEvents(false);
             console.setHandleUserInterrupt(true);
@@ -200,7 +200,7 @@ public class JLineConsoleProvider implements ConsoleProvider {
 
     public void setDebugMode() {
         jline.internal.Log.setOutput(System.out);
-        System.setProperty("jline.internal.Log.debug", "true");
+        System.setProperty("jline2.internal.Log.debug", "true");
     }
 
 }

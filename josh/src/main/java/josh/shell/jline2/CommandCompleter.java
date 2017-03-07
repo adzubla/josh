@@ -1,4 +1,4 @@
-package josh.shell.jline;
+package josh.shell.jline2;
 
 import java.io.File;
 import java.util.List;

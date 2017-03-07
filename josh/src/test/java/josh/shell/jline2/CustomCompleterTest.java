@@ -1,4 +1,4 @@
-package josh.shell.jline;
+package josh.shell.jline2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
