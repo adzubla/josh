@@ -115,19 +115,19 @@ public class CustomCompleterTest {
     @Test
     public void testComplete1_4() throws Exception {
         complete("cmd2");
-        assertThat(candidates, hasItems("cmd2 "));
+        assertThat(candidates, hasItems("cmd2"));
     }
 
     @Test
     public void testComplete1_5() throws Exception {
         complete("co");
-        assertThat(candidates, hasItems("conn "));
+        assertThat(candidates, hasItems("conn"));
     }
 
     @Test
     public void testComplete1_6() throws Exception {
         complete("conn");
-        assertThat(candidates, hasItems("conn "));
+        assertThat(candidates, hasItems("conn"));
     }
 
     // Casos com 2 tokens
@@ -135,7 +135,7 @@ public class CustomCompleterTest {
     @Test
     public void testComplete2_1() {
         complete("cmd2");
-        assertThat(candidates, hasItems("cmd2 "));
+        assertThat(candidates, hasItems("cmd2"));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class CustomCompleterTest {
     @Test
     public void testComplete2_6() {
         complete("cmd2 opt2_a");
-        assertThat(candidates, hasItems("opt2_a "));
+        assertThat(candidates, hasItems("opt2_a"));
     }
 
     // Option values
