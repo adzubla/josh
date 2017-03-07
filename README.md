@@ -33,7 +33,7 @@ What josh must provide:
 Don't depend on a lot of external libraries
 
 * The only required dependency is slf4j-api
-* jline and jcommander are _optional_ dependencies
+* jline2 and jcommander are _optional_ dependencies
 
 
 # How to use
@@ -68,7 +68,7 @@ To use advanced line editing capabilities, instead of BasicConsoleProvider you s
 that is already included in josh.
 
 ```
-        JLineConsoleProvider provider = new JLineConsoleProvider();
+        JLine2ConsoleProvider provider = new JLine2ConsoleProvider();
         provider.setHistory(System.getProperty("user.home") + "/.josh/", "josh_history", 800);
         provider.setPromptColor(Ansi.Color.CYAN);
         provider.setErrorColor(Ansi.Color.RED);
